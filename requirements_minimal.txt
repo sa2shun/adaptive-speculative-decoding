@@ -1,0 +1,25 @@
+# Minimal requirements for academic experiments
+
+# Core ML
+torch>=2.0.0
+transformers>=4.40.0
+accelerate>=0.25.0
+
+# Statistical evaluation
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+statsmodels>=0.14.0
+
+# Visualization for paper figure
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Utilities
+tqdm>=4.65.0
+pyyaml>=6.0
+
+# Optional but recommended
+# bitsandbytes>=0.41.0  # For INT8 quantization
+# wandb>=0.15.0  # For experiment tracking

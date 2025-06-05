@@ -1,0 +1,76 @@
+# Qwen3 model family configuration for academic evaluation
+# Using INT8 quantization for all models to fit on available GPUs
+
+models:
+  stages:
+    - name: "qwen3-7b"
+      model_path: "Qwen/Qwen3-7B"
+      size_label: "7b"
+      tensor_parallel_size: 1
+      gpu_memory_fraction: 0.9
+      quantization: "int8"  # 7GB memory
+      theoretical_quality: 0.70
+      relative_cost: 1.0
+      
+    - name: "qwen3-14b"
+      model_path: "Qwen/Qwen3-14B"
+      size_label: "14b"
+      tensor_parallel_size: 1
+      gpu_memory_fraction: 0.9
+      quantization: "int8"  # 14GB memory
+      theoretical_quality: 0.80
+      relative_cost: 2.0
+      
+    - name: "qwen3-32b"
+      model_path: "Qwen/Qwen3-32B"
+      size_label: "32b"
+      tensor_parallel_size: 2
+      gpu_memory_fraction: 0.9
+      quantization: "int8"  # 32GB memory across 2 GPUs
+      theoretical_quality: 0.85
+      relative_cost: 4.5
+      
+    - name: "qwen3-72b"
+      model_path: "Qwen/Qwen3-72B"
+      size_label: "72b"
+      tensor_parallel_size: 4
+      gpu_memory_fraction: 0.9
+      quantization: "int8"  # 72GB memory across 4 GPUs
+      theoretical_quality: 0.90
+      relative_cost: 10.0
+
+# Simplified quality predictor
+predictor:
+  architecture: "mlp"  # Simple MLP, no ensemble
+  input_dim: 64
+  hidden_dim: 32
+  output_dim: 1
+  activation: "relu"
+  dropout: 0.1
+  
+# Essential evaluation datasets only
+evaluation:
+  datasets:
+    - name: "mmlu"
+      subset: "test"
+      max_samples: 1000
+      
+    - name: "humaneval"  
+      subset: "test"
+      max_samples: 164  # Full dataset
+      
+    - name: "mt-bench"
+      subset: "test"
+      max_samples: 80
+      
+  metrics:
+    - "quality_accuracy"  # Simple accuracy metric
+    - "inference_speedup"  # Relative to 72B baseline
+    - "cost_reduction"  # Computational cost saved
+    
+# Theoretical parameters for experiments
+theory:
+  lambda_values: [0.1, 0.5, 1.0, 2.0, 5.0]  # Quality-cost tradeoff
+  confidence_level: 0.95
+  epsilon: 0.1  # PAC accuracy
+  delta: 0.05  # PAC confidence

@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 # Model configurations
 MODEL_CONFIGS = {
     "8b": {
-        "name": "meta-llama/Llama-3.2-8B",
+        "name": "meta-llama/Llama-3.1-8B",
         "size_gb": 16,
         "auth_required": True
     },
     "13b": {
-        "name": "meta-llama/Llama-3.1-13B", 
-        "size_gb": 26,
+        "name": "meta-llama/Llama-3.1-8B-Instruct", 
+        "size_gb": 16,
         "auth_required": True
     },
     "34b": {
@@ -37,7 +37,7 @@ MODEL_CONFIGS = {
         "auth_required": False
     },
     "70b": {
-        "name": "meta-llama/Llama-3.1-70B",
+        "name": "meta-llama/Llama-3.1-70B-Instruct",
         "size_gb": 140,
         "auth_required": True
     }

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  adaptive-sd:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: adaptive-sd:latest
+    container_name: adaptive-sd-server
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+      - NCCL_P2P_DISABLE=1
+      - WANDB_API_KEY=${WANDB_API_KEY}
+    volumes:
+      - ./src:/app/src
+      - ./configs:/app/configs
+      - ./scripts:/app/scripts
+      - ./experiments:/app/experiments
+      - ./data:/app/data
+      - ./checkpoints:/app/checkpoints
+      - ./logs:/app/logs
+      - ./results:/app/results
+      - /data/huggingface:/root/.cache/huggingface  # HuggingFace cache
+    ports:
+      - "8000:8000"  # API server
+      - "9090:9090"  # Metrics
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 8
+              capabilities: [gpu]
+    command: python -m src.serving.server --config configs/serving.yaml
+    
+  notebook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: adaptive-sd:latest
+    container_name: adaptive-sd-notebook
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - .:/app
+      - /data/huggingface:/root/.cache/huggingface
+    ports:
+      - "8888:8888"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 8
+              capabilities: [gpu]
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root

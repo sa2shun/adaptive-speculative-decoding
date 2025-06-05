@@ -1,0 +1,63 @@
+# Training configuration for quality predictor
+
+predictor:
+  model:
+    feature_dim: 256
+    hidden_dim: 128
+    dropout: 0.1
+    
+  training:
+    batch_size: 512
+    learning_rate: 0.001
+    num_epochs: 50
+    weight_decay: 0.01
+    early_stopping_patience: 5
+    
+  data:
+    num_samples: 100000
+    train_split: 0.8
+    val_split: 0.1
+    test_split: 0.1
+    balance_classes: true
+    
+  features:
+    use_entropy: true
+    use_length_ratio: true
+    use_logprobs: true
+    use_stage_info: true
+    entropy_window: 32
+    
+  optimization:
+    optimizer: "adamw"
+    scheduler: "cosine"
+    warmup_steps: 1000
+    gradient_clip: 1.0
+    
+# Data generation settings
+data_generation:
+  datasets:
+    - name: "mmlu"
+      weight: 0.3
+    - name: "humaneval"
+      weight: 0.2
+    - name: "hotpotqa"
+      weight: 0.2
+    - name: "alpacaeval"
+      weight: 0.15
+    - name: "longbench"
+      weight: 0.15
+      
+  quality_threshold:
+    bleu: 0.8
+    rouge: 0.75
+    
+  sampling:
+    max_tokens_per_stage: 128
+    temperature: 0.7
+    
+# Logging
+logging:
+  use_wandb: true
+  project_name: "adaptive-speculative-decoding"
+  log_interval: 100
+  save_interval: 1000

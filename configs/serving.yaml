@@ -1,0 +1,61 @@
+# Serving configuration for Adaptive Speculative Decoding
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1  # Single worker for GPU sharing
+  reload: false
+  log_level: "info"
+  
+pipeline:
+  # Quality-speed tradeoff parameter
+  lambda_value: 1.0
+  
+  # Risk adjustment
+  risk_adjustment:
+    enabled: true
+    alpha: 1.0
+    beta: 1.0
+    
+  # Cache management
+  cache:
+    enable_kv_cache: true
+    cache_cleanup_interval: 300  # seconds
+    max_cache_size_gb: 40
+    
+  # Batching
+  batching:
+    enable_dynamic_batching: true
+    max_batch_size: 32
+    batch_timeout_ms: 50
+    
+  # Optimization
+  optimization:
+    enable_cuda_graphs: true
+    enable_tensor_cores: true
+    
+# Monitoring
+monitoring:
+  enable_metrics: true
+  metrics_port: 9090
+  export_interval: 10  # seconds
+  
+  tracked_metrics:
+    - "request_latency"
+    - "stage_distribution"
+    - "acceptance_rate"
+    - "gpu_utilization"
+    - "memory_usage"
+    
+# Safety
+safety:
+  max_concurrent_requests: 100
+  request_timeout_s: 300
+  max_input_length: 2048
+  max_output_length: 2048
+  
+# Debugging
+debug:
+  enable_profiling: false
+  trace_requests: false
+  save_intermediate_outputs: false

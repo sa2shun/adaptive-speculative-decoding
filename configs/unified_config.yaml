@@ -1,0 +1,353 @@
+# Unified Configuration for Adaptive Speculative Decoding
+# This configuration file contains all system settings in a hierarchical structure
+
+# System-wide configuration
+system:
+  system_name: "adaptive-speculative-decoding"
+  version: "2.0.0"
+  num_workers: 1
+  worker_timeout: 300.0
+  graceful_shutdown_timeout: 30.0
+  force_shutdown_timeout: 60.0
+
+# Hardware resources
+resources:
+  gpu_count: 8
+  gpu_memory_gb: 84.9
+  tensor_parallel_size:
+    "13B": 1
+    "34B": 2
+    "70B": 4
+  max_model_len: 4096
+  gpu_memory_utilization: 0.9
+  swap_space_gb: 64
+  cpu_cores: 64
+  system_memory_gb: 1024
+  model_cache_path: "/raid/$USER/adaptive-sd-models"
+  data_cache_path: "/raid/$USER/adaptive-sd-data"
+  results_path: "/raid/$USER/adaptive-sd-results"
+
+# Model configuration
+models:
+  stages:
+    - model_name: "meta-llama/Llama-2-13b-chat-hf"
+      model_path: "/raid/$USER/adaptive-sd-models/llama-2-13b-chat"
+      size_label: "13B"
+      tensor_parallel_size: 1
+      max_model_len: 4096
+      dtype: "auto"
+      base_latency_ms: 120.0
+      base_cost: 1.0
+      base_capacity_qps: 50.0
+      quality_range_min: 0.75
+      quality_range_max: 0.90
+      gpu_ids: [0]
+    
+    - model_name: "codellama/CodeLlama-34b-Instruct-hf"
+      model_path: "/raid/$USER/adaptive-sd-models/codellama-34b-instruct"
+      size_label: "34B"
+      tensor_parallel_size: 2
+      max_model_len: 4096
+      dtype: "auto"
+      base_latency_ms: 180.0
+      base_cost: 1.3
+      base_capacity_qps: 25.0
+      quality_range_min: 0.85
+      quality_range_max: 0.94
+      gpu_ids: [1, 2]
+    
+    - model_name: "meta-llama/Llama-2-70b-chat-hf"
+      model_path: "/raid/$USER/adaptive-sd-models/llama-2-70b-chat"
+      size_label: "70B"
+      tensor_parallel_size: 4
+      max_model_len: 4096
+      dtype: "auto"
+      base_latency_ms: 320.0
+      base_cost: 1.8
+      base_capacity_qps: 12.0
+      quality_range_min: 0.90
+      quality_range_max: 0.96
+      gpu_ids: [3, 4, 5, 6]
+  
+  # Model loading parameters
+  trust_remote_code: false
+  revision: "main"
+  tokenizer_mode: "auto"
+  skip_tokenizer_init: false
+  quantization: null
+  load_format: "auto"
+  enforce_eager: false
+  max_context_len_to_capture: 8192
+  disable_custom_all_reduce: false
+
+# Serving configuration
+serving:
+  # Optimization settings
+  optimization:
+    strategy: "greedy"
+    lambda_param: 1.0
+    enable_dynamic_costs: true
+    cost_adjustment_interval: 30.0
+    max_cost_multiplier: 3.0
+    min_cost_multiplier: 0.5
+    quality_predictor_type: "ensemble"
+    prediction_confidence_threshold: 0.8
+    enable_uncertainty_quantification: true
+    target_latency_ms: 200.0
+    max_error_rate: 0.01
+    min_quality_score: 0.85
+    target_throughput_qps: 10.0
+    enable_load_balancing: true
+    queue_length_threshold: 10
+    gpu_utilization_threshold: 0.85
+    enable_70b_enhancement: true
+    target_70b_utilization: 0.4
+    complexity_detection_threshold: 0.6
+    quality_critical_patterns:
+      - '\b(legal|medical|financial|safety)'
+      - '\b(critical|important|essential)'
+      - '\b(research|academic|scholarly)'
+  
+  # Quality evaluation
+  quality:
+    primary_metric: "multi_metric"
+    metrics_to_compute: ["bleu", "rouge", "bertscore"]
+    metric_weights:
+      bleu: 0.25
+      rouge1: 0.15
+      rougeL: 0.15
+      bertscore_f1: 0.25
+      semantic_coherence: 0.10
+      repetition_score: 0.05
+      general_quality: 0.05
+    reference_data_path: null
+    enable_task_specific_metrics: true
+    statistical_significance_level: 0.01
+    min_quality_for_early_stop: 0.8
+    quality_degradation_threshold: 0.05
+  
+  # Server settings
+  server:
+    host: "0.0.0.0"
+    port: 8000
+    api_prefix: "/api/v1"
+    max_concurrent_requests: 100
+    request_timeout_seconds: 300.0
+    max_request_size_mb: 10.0
+    response_streaming: true
+    chunk_size: 1024
+    health_check_interval: 30.0
+    enable_metrics_endpoint: true
+    metrics_port: 8001
+    log_level: "INFO"
+    access_log: true
+    error_log_path: "logs/error.log"
+    access_log_path: "logs/access.log"
+  
+  # Caching
+  cache:
+    enable_kv_cache: true
+    kv_cache_size_gb: 32.0
+    cache_eviction_policy: "lru"
+    enable_response_cache: true
+    response_cache_size_mb: 1024.0
+    response_cache_ttl_seconds: 3600
+    preload_all_models: true
+    model_cache_cleanup_interval: 600.0
+  
+  # Pipeline settings
+  enable_pipeline_parallelism: true
+  max_pipeline_depth: 3
+  pipeline_timeout_seconds: 60.0
+  enable_detailed_metrics: true
+  enable_request_tracing: false
+  debug_mode: false
+  profiling_enabled: false
+  enable_graceful_shutdown: true
+  shutdown_timeout_seconds: 30.0
+  enable_auto_scaling: false
+
+# Training configuration
+training:
+  # Data generation
+  data_generation:
+    num_samples: 100000
+    sample_distribution:
+      simple: 0.6
+      moderate: 0.3
+      complex: 0.1
+    max_prompt_length: 512
+    min_prompt_length: 10
+    include_code_queries: true
+    include_math_queries: true
+    include_reasoning_queries: true
+    quality_noise_std: 0.02
+    latency_noise_std: 10.0
+    domain_weights:
+      factual: 0.25
+      reasoning: 0.20
+      technical: 0.20
+      creative: 0.15
+      mathematical: 0.10
+      conversational: 0.10
+    output_dir: "/raid/$USER/adaptive-sd-training-data"
+    train_split: 0.8
+    val_split: 0.1
+    test_split: 0.1
+  
+  # Predictor training
+  predictor_training:
+    predictor_type: "ensemble"
+    random_seed: 42
+    batch_size: 256
+    num_epochs: 100
+    learning_rate: 0.001
+    weight_decay: 0.01
+    early_stopping_patience: 10
+    early_stopping_min_delta: 0.001
+    cv_folds: 5
+    validation_split: 0.2
+    ensemble_models: ["random_forest", "gradient_boosting", "lightgbm", "neural_network", "ridge"]
+    hidden_layers: [256, 128, 64, 32]
+    activation: "relu"
+    dropout_rate: 0.2
+    batch_normalization: true
+    n_estimators: 200
+    max_depth: 15
+    min_samples_split: 5
+    min_samples_leaf: 3
+    feature_scaling: true
+    feature_selection: true
+    max_features: null
+    model_output_dir: "/raid/$USER/adaptive-sd-models/predictors"
+    save_best_only: true
+    save_feature_importance: true
+  
+  # Evaluation
+  evaluation:
+    datasets:
+      - name: "mmlu"
+        dataset_type: "mmlu"
+        task_category: "factual"
+        max_samples: 1000
+        metrics_to_compute: ["bleu", "rouge1", "rougeL", "bertscore"]
+      - name: "humaneval"
+        dataset_type: "humaneval"
+        task_category: "technical"
+        max_samples: 500
+        metrics_to_compute: ["bleu", "rouge1", "rougeL", "bertscore"]
+      - name: "gsm8k"
+        dataset_type: "gsm8k"
+        task_category: "mathematical"
+        max_samples: 500
+        metrics_to_compute: ["bleu", "rouge1", "rougeL", "bertscore"]
+    batch_size: 32
+    max_concurrent_requests: 10
+    timeout_per_request: 60.0
+    lambda_values: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+    include_single_model_baselines: true
+    include_static_pipeline: true
+    num_bootstrap_samples: 1000
+    confidence_level: 0.95
+    significance_level: 0.01
+    results_dir: "/raid/$USER/adaptive-sd-results"
+    save_individual_results: true
+    save_aggregated_results: true
+    generate_visualizations: true
+  
+  # Experiment settings
+  experiment:
+    experiment_name: "default_experiment"
+    experiment_description: ""
+    tags: []
+    random_seed: 42
+    deterministic_mode: true
+    max_gpu_memory_fraction: 0.9
+    parallel_experiments: 1
+    log_interval: 100
+    save_checkpoints: true
+    checkpoint_interval: 1000
+    output_dir: "/raid/$USER/adaptive-sd-experiments"
+    overwrite_existing: false
+    compress_outputs: true
+  
+  # Global training parameters
+  use_mixed_precision: true
+  gradient_clipping: 1.0
+  enable_distributed: false
+  world_size: 1
+  rank: 0
+
+# Logging configuration
+logging:
+  root_level: "INFO"
+  module_levels:
+    adaptive_sd: "INFO"
+    vllm: "WARNING"
+    transformers: "WARNING"
+    torch: "WARNING"
+  console_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_format: "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
+  log_dir: "logs"
+  max_file_size_mb: 100
+  backup_count: 5
+  log_requests: true
+  log_model_loading: true
+  log_optimization_decisions: true
+  log_quality_predictions: false
+  log_latencies: true
+  log_gpu_metrics: true
+  log_memory_usage: true
+
+# Security configuration
+security:
+  enable_api_key_auth: false
+  api_key_header: "X-API-Key"
+  rate_limiting_enabled: true
+  max_requests_per_minute: 1000
+  max_input_length: 8192
+  allowed_file_types: [".txt", ".json"]
+  sanitize_inputs: true
+  trust_remote_code: false
+  allow_model_downloads: false
+  verify_model_checksums: true
+  allowed_hosts: ["localhost", "127.0.0.1"]
+  enable_cors: true
+  cors_origins: ["*"]
+
+# Monitoring configuration
+monitoring:
+  enable_prometheus: true
+  prometheus_port: 9090
+  metrics_retention_days: 30
+  health_check_timeout: 5.0
+  health_check_endpoints: ["/health", "/health/ready", "/health/live"]
+  track_request_latencies: true
+  track_model_utilization: true
+  track_memory_usage: true
+  track_error_rates: true
+  enable_alerting: false
+  alert_webhook_url: null
+  alert_thresholds:
+    error_rate: 0.05
+    avg_latency_ms: 1000.0
+    gpu_utilization: 0.95
+    memory_usage: 0.9
+  enable_tracing: false
+  jaeger_endpoint: null
+  trace_sampling_rate: 0.1
+
+# Environment configuration
+environment:
+  environment: "development"
+  debug_mode: true
+  cuda_visible_devices: null
+  cuda_memory_fraction: 0.9
+  bind_address: "0.0.0.0"
+  external_url: null
+  data_root: "/raid/$USER/adaptive-sd-data"
+  model_root: "/raid/$USER/adaptive-sd-models"
+  cache_root: "/raid/$USER/adaptive-sd-cache"
+  temp_dir: "/tmp/adaptive-sd"
+  max_memory_gb: null
+  max_disk_gb: null

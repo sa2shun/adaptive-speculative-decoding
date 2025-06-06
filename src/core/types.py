@@ -5,7 +5,7 @@ This module contains all type hints, data classes, and type aliases
 used throughout the system for better type safety and documentation.
 """
 
-from typing import Dict, List, Optional, Union, Any, Tuple, Protocol, TypeVar, Generic
+from typing import Dict, List, Optional, Union, Any, Tuple, Protocol, TypeVar, Generic, Callable
 from dataclasses import dataclass, field
 from enum import Enum
 import time
@@ -327,6 +327,6 @@ class MetricsCollector(Protocol):
         ...
 
 # Type aliases for common function signatures
-QualityPredictionFunction = callable[[str, int], PredictionResult]
-OptimizationFunction = callable[[RequestContext, Dict[str, Any]], OptimizationDecision]
-QualityEvaluationFunction = callable[[ModelOutput, Optional[str]], QualityMetrics]
+QualityPredictionFunction = Callable[[str, int], PredictionResult]
+OptimizationFunction = Callable[[RequestContext, Dict[str, Any]], OptimizationDecision]
+QualityEvaluationFunction = Callable[[ModelOutput, Optional[str]], QualityMetrics]

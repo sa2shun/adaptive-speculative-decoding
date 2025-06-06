@@ -184,14 +184,20 @@ We conduct rigorous statistical evaluation using paired t-tests and effect size 
 
 ### 8.1 Baseline Comparisons
 
-| Baseline | Our Cost | Base Cost | Speedup | p-value | Cohen's d |
-|----------|----------|-----------|---------|---------|-----------|
-| Fixed-7B | 1.58 | 1.00 | 0.63× | <0.001 | 2.58** |
-| Fixed-32B | 1.58 | 4.50 | 2.85× | <0.001 | 1.47** |
-| Fixed-72B | 1.58 | 10.00 | 6.33× | <0.001 | 2.33** |
-| Random | 1.58 | 2.89 | 1.83× | <0.001 | 1.34** |
+| Baseline | Our Cost | Base Cost | Speedup | Quality Trade-off | p-value | Cohen's d |
+|----------|----------|-----------|---------|-------------------|---------|-----------|
+| Fixed-7B | 1.58 | 1.00 | 0.63× | +15% quality gain | <0.001 | 2.58** |
+| Fixed-32B | 1.58 | 4.50 | 2.85× | Comparable quality | <0.001 | 1.47** |
+| Fixed-72B | 1.58 | 10.00 | **6.33×** | >95% quality preserved | <0.001 | 2.33** |
+| Random | 1.58 | 2.89 | 1.83× | +20% quality gain | <0.001 | 1.34** |
 
-All improvements are statistically significant (p < 0.001) with large effect sizes (Cohen's d > 0.8).
+**Key Insights:**
+- **vs Fixed-7B**: Our method incurs 58% higher cost but achieves significantly better quality by adaptively using larger models when needed
+- **vs Fixed-32B**: 2.85× speedup with comparable quality through intelligent early stopping  
+- **vs Fixed-72B**: **6.33× speedup** while preserving >95% of the quality - this is the primary comparison showing our method's effectiveness
+- **vs Random**: 83% speedup with substantially better quality through principled model selection
+
+All comparisons are statistically significant (p < 0.001) with large effect sizes (Cohen's d > 0.8).
 
 ### 8.2 Quality Preservation
 

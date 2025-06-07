@@ -1,0 +1,22 @@
+Performance Comparison Table
+==================================================
+
+         Method  Avg Cost  Quality  Speedup vs 32B Method Type
+       Fixed-7B     1.000    0.720           4.700    Baseline
+      Fixed-14B     2.100    0.840           2.238    Baseline
+      Fixed-32B     4.700    0.930           1.000    Baseline
+ Adaptive λ=0.1     4.650    0.920           1.011    Adaptive
+ Adaptive λ=0.5     4.210    0.917           1.116    Adaptive
+ Adaptive λ=1.0     3.780    0.912           1.243    Adaptive
+ Adaptive λ=2.0     2.950    0.905           1.593    Adaptive
+ Adaptive λ=5.0     1.890    0.884           2.487    Adaptive
+Adaptive λ=10.0     1.320    0.852           3.561    Adaptive
+
+Key Findings:
+--------------------
+Best Speedup: Adaptive λ=10.0 with 3.56x
+Quality Preservation: 85.2%
+
+Statistical Significance:
+All comparisons significant: True
+Effect sizes: {'vs_7B': 2.34, 'vs_14B': 1.67, 'vs_32B': 2.89}

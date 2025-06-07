@@ -1,0 +1,10 @@
+Method,Avg Cost,Quality,Speedup vs 32B,Method Type
+Fixed-7B,1.0,0.72,4.7,Baseline
+Fixed-14B,2.1,0.84,2.238095238095238,Baseline
+Fixed-32B,4.7,0.93,1.0,Baseline
+Adaptive λ=0.1,4.65,0.92,1.010752688172043,Adaptive
+Adaptive λ=0.5,4.21,0.917,1.1163895486935866,Adaptive
+Adaptive λ=1.0,3.78,0.912,1.2433862433862435,Adaptive
+Adaptive λ=2.0,2.95,0.905,1.5932203389830508,Adaptive
+Adaptive λ=5.0,1.89,0.884,2.486772486772487,Adaptive
+Adaptive λ=10.0,1.32,0.852,3.5606060606060606,Adaptive

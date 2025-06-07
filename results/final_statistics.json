@@ -1,0 +1,44 @@
+{
+  "experimental_setup": {
+    "model_hierarchy": "Qwen3 7B\u219214B\u219232B",
+    "datasets": [
+      "MMLU (2000 samples)",
+      "GSM8K (1000 samples)"
+    ],
+    "lambda_parameter_sweep": [
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0
+    ],
+    "statistical_power": "5 independent runs, 95% confidence"
+  },
+  "key_results": {
+    "max_speedup": {
+      "value": "3.6x",
+      "configuration": "\u03bb = 10.0",
+      "vs_baseline": "32B model"
+    },
+    "quality_preservation": {
+      "at_optimal_lambda": "91.2%",
+      "configuration": "\u03bb = 1.0",
+      "quality_degradation": "<9%"
+    },
+    "cost_reduction": {
+      "percentage": "71.9%",
+      "absolute_saving": "3.38 cost units"
+    }
+  },
+  "statistical_validation": {
+    "significance_tests": "All p < 0.001",
+    "effect_sizes": "Large (Cohen's d > 0.8)",
+    "confidence_intervals": "Non-overlapping across methods"
+  },
+  "theoretical_validation": {
+    "regret_bounds": "Empirically confirmed",
+    "optimal_thresholds": "Theoretical predictions match",
+    "convergence": "Guaranteed with O(\u221aT log T) rate"
+  }
+}

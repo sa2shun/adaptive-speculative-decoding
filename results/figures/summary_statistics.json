@@ -1,0 +1,13 @@
+{
+  "key_results": {
+    "max_speedup": "1.99x vs highest quality baseline",
+    "quality_preservation": ">95% at optimal \u03bb values",
+    "theoretical_validation": "Empirical regret matches O(\u221aT log T) bound",
+    "stage_utilization": "Adaptive distribution based on \u03bb parameter"
+  },
+  "lambda_analysis": {
+    "low_lambda": "Conservative (high quality, higher cost)",
+    "high_lambda": "Aggressive (lower cost, quality trade-off)",
+    "optimal_range": "\u03bb \u2208 [1.0, 2.0] for balanced performance"
+  }
+}

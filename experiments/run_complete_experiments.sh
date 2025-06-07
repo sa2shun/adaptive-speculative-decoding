@@ -5,6 +5,10 @@
 
 set -e  # Exit on any error
 
+# Activate virtual environment
+cd /home/sasaki/adaptive-speculative-decoding
+source venv/bin/activate
+
 # Configuration
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7  # Use all 8 GPUs
 export PYTHONPATH="/home/sasaki/adaptive-speculative-decoding:$PYTHONPATH"

@@ -1,0 +1,56 @@
+{
+  "config": {
+    "n_stages": 3,
+    "n_queries": 100,
+    "lambda_values": [
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      5.0
+    ],
+    "cost_ratios": [
+      1.0,
+      4.5,
+      10.0
+    ],
+    "quality_bounds": [
+      0.7,
+      0.85,
+      0.95
+    ]
+  },
+  "experiments": {
+    "0.1": [
+      {
+        "query_complexity": 0.6602139668616448,
+        "lambda": 0.1,
+        "stopping_stage": 2,
+        "total_cost": 15.5,
+        "final_quality": 0.99,
+        "outputs": [
+          [
+            0,
+            "Stage-0 response (quality: 0.712)",
+            0.7121967740205309,
+            1.0
+          ],
+          [
+            1,
+            "Stage-1 response (quality: 0.869)",
+            0.868733923088557,
+            4.5
+          ],
+          [
+            2,
+            "Stage-2 response (quality: 0.990)",
+            0.99,
+            10.0
+          ]
+        ],
+        "decisions": [
+          {
+            "stage": 0,
+            "confidence": 0.29163675481643675,
+            "threshold": 0.8804347826086958,
+            "stop": 

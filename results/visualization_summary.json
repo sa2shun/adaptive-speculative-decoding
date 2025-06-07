@@ -1,0 +1,8 @@
+{
+  "optimal_lambda": 0.1,
+  "max_efficiency": 0.7296,
+  "latency_improvement": "25.1%",
+  "quality_range": "0.912 - 0.968",
+  "cost_range": "1.25 - 1.71",
+  "optimal_70b_usage": "7%"
+}

@@ -1,63 +1,260 @@
-# Training configuration for quality predictor
+# Quality Predictor Training Configuration
+# Research-grade training with 100K real samples
 
+# Quality predictor model
 predictor:
   model:
-    feature_dim: 256
-    hidden_dim: 128
-    dropout: 0.1
+    architecture: "mlp"
+    input_dim: 128  # Expanded feature set
+    hidden_layers: [256, 128, 64]  # Deeper architecture
+    output_dim: 1
+    activation: "relu"
+    dropout: 0.2
+    batch_normalization: true
     
   training:
-    batch_size: 512
+    # Training hyperparameters
+    batch_size: 256  # Optimized for memory and convergence
     learning_rate: 0.001
-    num_epochs: 50
+    num_epochs: 100
     weight_decay: 0.01
-    early_stopping_patience: 5
+    early_stopping_patience: 10
+    early_stopping_min_delta: 0.001
+    
+    # Optimization
+    optimizer: "adamw"
+    scheduler: "cosine"
+    warmup_steps: 1000
+    gradient_clip: 1.0
+    
+    # Regularization
+    label_smoothing: 0.1
+    mixup_alpha: 0.2  # Data augmentation
     
   data:
-    num_samples: 100000
+    # Dataset scale - research requirement
+    num_samples: 100000  # Exactly as specified in CLAUDE.md
     train_split: 0.8
     val_split: 0.1
     test_split: 0.1
     balance_classes: true
     
+    # Cross-validation for robustness
+    cv_folds: 5
+    stratified_split: true
+    
+  # Feature engineering
   features:
+    # Input complexity features
     use_entropy: true
     use_length_ratio: true
     use_logprobs: true
     use_stage_info: true
     entropy_window: 32
     
-  optimization:
-    optimizer: "adamw"
-    scheduler: "cosine"
-    warmup_steps: 1000
-    gradient_clip: 1.0
+    # Advanced features
+    use_linguistic_features: true
+    use_semantic_complexity: true
+    use_syntactic_depth: true
+    use_context_similarity: true
     
-# Data generation settings
+    # Model-specific features
+    use_hidden_states: true
+    use_attention_weights: false  # Too expensive
+    use_gradient_norms: false     # Too expensive
+    
+    # Normalization
+    feature_scaling: "standard"
+    outlier_removal: true
+    outlier_threshold: 3.0
+
+# Data generation - REAL model execution only
 data_generation:
+  # Source datasets for diverse samples
   datasets:
     - name: "mmlu"
-      weight: 0.3
+      weight: 0.25
+      max_samples: 25000
+      complexity_range: [0.3, 0.9]
     - name: "humaneval"
-      weight: 0.2
-    - name: "hotpotqa"
-      weight: 0.2
-    - name: "alpacaeval"
+      weight: 0.20
+      max_samples: 20000
+      complexity_range: [0.4, 0.95]
+    - name: "gsm8k"
+      weight: 0.20
+      max_samples: 20000
+      complexity_range: [0.3, 0.85]
+    - name: "truthfulqa"
       weight: 0.15
+      max_samples: 15000
+      complexity_range: [0.4, 0.9]
+    - name: "alpaca_eval"
+      weight: 0.10
+      max_samples: 10000
+      complexity_range: [0.2, 0.8]
     - name: "longbench"
-      weight: 0.15
+      weight: 0.10
+      max_samples: 10000
+      complexity_range: [0.5, 0.95]
       
-  quality_threshold:
-    bleu: 0.8
-    rouge: 0.75
-    
-  sampling:
-    max_tokens_per_stage: 128
+  # Model execution settings
+  model_execution:
+    use_real_models: true  # NO simulation
+    model_config: "configs/qwen3_models.yaml"
+    max_tokens_per_stage: 256
     temperature: 0.7
+    top_p: 0.9
     
-# Logging
-logging:
-  use_wandb: true
-  project_name: "adaptive-speculative-decoding"
+    # Quality measurement
+    quality_metrics: ["bleu", "rouge", "bertscore"]
+    quality_threshold:
+      bleu: 0.7
+      rouge1: 0.65
+      rougeL: 0.6
+      bertscore: 0.75
+      
+    # Cost measurement
+    measure_real_latency: true
+    latency_samples_per_config: 10
+    include_memory_usage: true
+    
+  # Data quality control
+  quality_control:
+    min_length: 10
+    max_length: 4096
+    filter_duplicates: true
+    filter_low_quality: true
+    manual_review_sample_size: 1000
+    
+  # Storage
+  output_dir: "/raid/$USER/adaptive-sd-training-data/"
+  save_format: "jsonl"
+  compress: true
+  
+# Training execution
+execution:
+  # Hardware utilization
+  device: "cuda"
+  mixed_precision: true
+  dataloader_workers: 8
+  pin_memory: true
+  
+  # Distributed training (if multiple GPUs available)
+  distributed: false
+  world_size: 1
+  rank: 0
+  
+  # Checkpointing
+  save_best_only: true
+  checkpoint_interval: 1000
+  checkpoint_dir: "/raid/$USER/adaptive-sd-models/predictors/"
+  
+  # Monitoring
   log_interval: 100
-  save_interval: 1000
+  validate_interval: 500
+  
+# Evaluation during training
+validation:
+  # Metrics to track
+  metrics:
+    - "mse"
+    - "mae" 
+    - "r2_score"
+    - "pearson_correlation"
+    - "spearman_correlation"
+    
+  # Validation strategy
+  validation_strategy: "epoch"
+  validation_steps: null
+  
+  # Early stopping
+  early_stopping:
+    monitor: "val_mse"
+    mode: "min"
+    patience: 10
+    min_delta: 0.001
+    restore_best_weights: true
+
+# Hyperparameter search (optional)
+hyperparameter_search:
+  enable: false  # Resource intensive
+  method: "random"
+  n_trials: 50
+  
+  search_space:
+    learning_rate: [0.0001, 0.001, 0.01]
+    batch_size: [128, 256, 512]
+    hidden_layers: [[128, 64], [256, 128, 64], [512, 256, 128]]
+    dropout: [0.1, 0.2, 0.3]
+    weight_decay: [0.001, 0.01, 0.1]
+
+# Logging and monitoring
+logging:
+  # Experiment tracking
+  use_wandb: true
+  wandb_project: "adaptive-speculative-decoding"
+  wandb_entity: null
+  
+  # Local logging
+  log_dir: "/raid/$USER/adaptive-sd-logs/training/"
+  log_level: "INFO"
+  save_logs: true
+  
+  # What to log
+  log_model_architecture: true
+  log_training_progress: true
+  log_validation_metrics: true
+  log_feature_importance: true
+  log_predictions: false  # Too verbose
+  
+  # Visualization
+  plot_training_curves: true
+  plot_feature_distributions: true
+  plot_prediction_scatter: true
+  save_plots: true
+
+# Model deployment
+deployment:
+  # Model export
+  export_format: ["pytorch", "onnx"]
+  quantize_for_inference: false  # Keep full precision
+  
+  # Integration with serving pipeline
+  integration_test: true
+  test_samples: 1000
+  performance_baseline: 0.8  # R² score threshold
+  
+  # Backup and versioning
+  model_versioning: true
+  backup_previous: true
+  
+# Quality assurance
+quality_assurance:
+  # Validation checks
+  check_data_quality: true
+  check_feature_correlations: true
+  check_model_generalization: true
+  
+  # Statistical tests
+  test_significance: true
+  significance_level: 0.05
+  
+  # Robustness checks
+  test_different_seeds: true
+  test_data_splits: true
+  cross_validation: true
+
+# Resource management
+resources:
+  # Storage
+  data_storage: "/raid/$USER/adaptive-sd-training-data/"
+  model_storage: "/raid/$USER/adaptive-sd-models/"
+  temp_storage: "/tmp/adaptive-sd-training/"
+  
+  # Memory management
+  max_memory_gb: 32
+  clear_cache_frequency: 1000
+  
+  # Time limits
+  max_training_time_hours: 24
+  checkpoint_time_interval: 3600  # 1 hour

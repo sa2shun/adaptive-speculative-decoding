@@ -1,0 +1,199 @@
+# Cost Profiling Configuration
+# Real latency measurement for accurate cost modeling
+
+# Profiling setup
+profiling:
+  # Basic configuration
+  name: "qwen3_latency_profiling"
+  description: "Measure actual inference latencies for Qwen3 model hierarchy"
+  
+  # Models to profile (must match qwen3_models.yaml)
+  models:
+    - name: "qwen3-7b"
+      model_path: "Qwen/Qwen3-7B-Instruct"
+      tensor_parallel_size: 1
+      gpu_ids: [0]
+    - name: "qwen3-14b"
+      model_path: "Qwen/Qwen3-14B-Instruct"
+      tensor_parallel_size: 1
+      gpu_ids: [1]
+    - name: "qwen3-32b"
+      model_path: "Qwen/Qwen3-32B-Instruct"
+      tensor_parallel_size: 2
+      gpu_ids: [2, 3]
+    - name: "qwen3-72b"
+      model_path: "Qwen/Qwen3-72B-Instruct"
+      tensor_parallel_size: 4
+      gpu_ids: [4, 5, 6, 7]
+
+# Measurement parameters
+measurement:
+  # Sample configurations for profiling
+  input_lengths: [64, 128, 256, 512, 1024, 2048]
+  output_lengths: [32, 64, 128, 256, 512]
+  batch_sizes: [1, 2, 4, 8, 16]
+  
+  # Number of measurements
+  warmup_iterations: 20    # Warmup GPU, exclude from measurements
+  measurement_iterations: 100  # Actual measurements per configuration
+  
+  # Statistical robustness
+  repetitions: 5  # Repeat entire measurement process
+  outlier_removal: true
+  outlier_threshold: 2.0  # Standard deviations
+  
+  # Timing precision
+  timing_method: "cuda_events"  # Most accurate for GPU operations
+  include_cpu_time: true
+  include_gpu_time: true
+  include_memory_transfer: true
+
+# Test data generation
+test_data:
+  # Generate diverse prompts for profiling
+  prompt_types:
+    - name: "simple_qa"
+      template: "What is {entity}?"
+      complexity: "low"
+      samples: 50
+    - name: "reasoning"
+      template: "Explain step by step how to solve: {problem}"
+      complexity: "medium"
+      samples: 50
+    - name: "code_generation"
+      template: "Write a Python function that {description}"
+      complexity: "high"
+      samples: 50
+    - name: "long_context"
+      template: "Given the following context: {context}\n\nAnswer: {question}"
+      complexity: "variable"
+      samples: 50
+      
+  # Content generation
+  random_seed: 42
+  vocabulary_size: 10000
+  min_entities: 100
+  content_domains: ["science", "technology", "history", "literature", "math"]
+
+# Hardware monitoring
+hardware:
+  # GPU metrics
+  monitor_gpu_utilization: true
+  monitor_gpu_memory: true
+  monitor_gpu_temperature: true
+  monitor_gpu_power: true
+  
+  # System metrics
+  monitor_cpu_utilization: true
+  monitor_system_memory: true
+  monitor_disk_io: false  # Usually not relevant for inference
+  
+  # Sampling frequency
+  monitoring_interval: 0.1  # seconds
+  
+# Cost modeling
+cost_modeling:
+  # Latency components
+  components:
+    - "prefill_time"     # Initial prompt processing
+    - "decode_time"      # Per-token generation
+    - "total_time"       # End-to-end wall clock
+    - "queue_time"       # Time waiting in queue (if applicable)
+    
+  # Cost function fitting
+  fit_models:
+    - "linear"           # Simple linear model
+    - "polynomial"       # Polynomial regression
+    - "power_law"        # Power law relationship
+    
+  # Model selection
+  model_selection_metric: "r_squared"
+  cross_validation_folds: 5
+  
+  # Cost vector generation
+  normalize_by_smallest: true  # Set smallest model cost to 1.0
+  include_uncertainty: true    # Confidence intervals
+  
+# Output configuration
+output:
+  # Storage
+  results_dir: "/raid/$USER/adaptive-sd-results/cost-profiling/"
+  save_raw_measurements: true
+  save_aggregated_stats: true
+  save_fitted_models: true
+  
+  # Reporting
+  generate_plots: true
+  plot_latency_distributions: true
+  plot_scaling_curves: true
+  plot_resource_utilization: true
+  
+  # Export formats
+  export_formats: ["json", "csv", "yaml"]
+  
+  # Integration with main config
+  update_model_configs: true  # Automatically update qwen3_models.yaml
+  backup_original_configs: true
+
+# Validation and quality control
+validation:
+  # Sanity checks
+  check_latency_ordering: true    # Larger models should be slower
+  check_memory_usage: true        # Should not exceed GPU memory
+  check_reproducibility: true     # Multiple runs should be consistent
+  
+  # Thresholds
+  max_coefficient_of_variation: 0.2  # 20% CV for latency measurements
+  min_throughput_tokens_per_sec: 1.0  # Sanity check
+  max_memory_utilization: 0.95       # Don't use >95% GPU memory
+  
+  # Error handling
+  retry_failed_measurements: true
+  max_retries: 3
+  timeout_per_measurement: 300.0  # 5 minutes max per measurement
+
+# Advanced profiling
+advanced:
+  # Memory profiling
+  profile_memory_usage: true
+  memory_sampling_rate: 0.1  # seconds
+  
+  # Model loading profiling
+  profile_model_loading: true
+  measure_cold_start: true
+  measure_warm_start: true
+  
+  # Concurrent load testing
+  test_concurrent_requests: true
+  max_concurrent_requests: [1, 2, 4, 8]
+  
+  # Different precision modes
+  test_precision_modes: false  # We only use full precision
+  
+# Runtime configuration
+runtime:
+  # Resource allocation
+  dedicated_profiling: true  # Don't run other workloads during profiling
+  clear_cache_between_models: true
+  gpu_memory_fraction: 0.9
+  
+  # Scheduling
+  run_models_sequentially: true  # More reliable measurements
+  cooling_time_between_models: 60.0  # seconds
+  
+  # Error recovery
+  continue_on_model_failure: true
+  save_partial_results: true
+  
+# Integration
+integration:
+  # Update main configuration files
+  auto_update_configs: true
+  config_files_to_update:
+    - "configs/qwen3_models.yaml"
+    - "configs/evaluation.yaml"
+    
+  # Notification
+  notify_on_completion: false
+  slack_webhook: null
+  email_notification: null

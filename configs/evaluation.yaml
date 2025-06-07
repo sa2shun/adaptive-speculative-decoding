@@ -1,0 +1,217 @@
+# Comprehensive Evaluation Configuration
+# Research-grade evaluation settings for adaptive speculative decoding
+
+# Dataset configuration
+datasets:
+  mmlu:
+    path: "cais/mmlu"
+    subset: "all"
+    max_samples: 2000
+    task_category: "knowledge"
+    split: "test"
+    metrics: ["accuracy", "f1_macro"]
+    
+  humaneval:
+    path: "openai/humaneval"
+    subset: null
+    max_samples: 1000  # Expanded for research rigor
+    task_category: "code_generation"
+    split: "test"
+    metrics: ["pass_at_1", "pass_at_10", "pass_at_100"]
+    
+  gsm8k:
+    path: "gsm8k"
+    subset: "main"
+    max_samples: 1319  # Full dataset
+    task_category: "mathematical_reasoning"
+    split: "test"
+    metrics: ["exact_match", "numeric_accuracy"]
+    
+  truthfulqa:
+    path: "truthful_qa"
+    subset: "generation"
+    max_samples: 1000
+    task_category: "truthfulness"
+    split: "validation"
+    metrics: ["bleurt", "rouge", "truthfulness_score"]
+
+# Experimental parameters
+experiment:
+  # Lambda sweep for quality-cost tradeoff
+  lambda_values: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
+  
+  # Statistical rigor
+  num_seeds: 5
+  random_seeds: [42, 123, 456, 789, 999]
+  confidence_level: 0.95
+  significance_level: 0.01
+  
+  # Baseline comparisons
+  baselines:
+    - name: "qwen3-7b-only"
+      model: "qwen3-7b"
+      strategy: "single_model"
+    - name: "qwen3-14b-only"
+      model: "qwen3-14b"
+      strategy: "single_model"
+    - name: "qwen3-32b-only"
+      model: "qwen3-32b"
+      strategy: "single_model"
+    - name: "qwen3-72b-only"
+      model: "qwen3-72b"
+      strategy: "single_model"
+    - name: "static-pipeline"
+      strategy: "static_multi_stage"
+      stages: ["qwen3-7b", "qwen3-14b", "qwen3-32b", "qwen3-72b"]
+    - name: "random-stopping"
+      strategy: "random_stopping"
+      stop_probability: 0.25
+
+# Quality evaluation settings
+quality:
+  # Primary evaluation metrics
+  primary_metrics:
+    - "task_accuracy"
+    - "semantic_similarity"
+    - "fluency_score"
+    
+  # Quality computation
+  quality_computation:
+    reference_based: true
+    automatic_metrics: ["bleu", "rouge", "bertscore"]
+    semantic_metrics: ["sentence_transformer_similarity"]
+    fluency_metrics: ["perplexity", "grammaticality"]
+    
+  # Quality aggregation
+  aggregation:
+    method: "weighted_average"
+    weights:
+      task_accuracy: 0.4
+      semantic_similarity: 0.3
+      fluency_score: 0.2
+      diversity: 0.1
+
+# Performance evaluation settings  
+performance:
+  # Latency measurement
+  latency:
+    measure_wall_clock: true
+    measure_gpu_time: true
+    measure_first_token: true
+    measure_per_token: true
+    warmup_iterations: 10
+    measurement_iterations: 50
+    
+  # Throughput measurement
+  throughput:
+    batch_sizes: [1, 4, 8, 16]
+    sequence_lengths: [128, 256, 512, 1024]
+    concurrent_requests: [1, 4, 8, 16]
+    
+  # Resource utilization
+  resource_tracking:
+    gpu_utilization: true
+    gpu_memory: true
+    cpu_utilization: true
+    system_memory: true
+    power_consumption: false  # Requires special hardware
+
+# Statistical analysis
+statistics:
+  # Significance testing
+  significance_tests:
+    - "paired_t_test"
+    - "wilcoxon_signed_rank"
+    - "mann_whitney_u"
+    
+  # Effect size calculation
+  effect_sizes:
+    - "cohen_d"
+    - "hedge_g"
+    - "glass_delta"
+    
+  # Confidence intervals
+  confidence_intervals:
+    method: "bootstrap"
+    n_bootstrap: 10000
+    confidence_level: 0.95
+    
+  # Multiple comparison correction
+  multiple_comparison:
+    method: "bonferroni"
+    family_wise_error_rate: 0.05
+
+# Output configuration
+output:
+  # Results storage
+  results_dir: "/raid/$USER/adaptive-sd-results/"
+  experiment_name: null  # Will be auto-generated
+  
+  # File formats
+  save_formats: ["json", "csv", "pickle"]
+  save_raw_outputs: true
+  save_aggregated_results: true
+  save_statistical_analysis: true
+  
+  # Visualization
+  generate_plots: true
+  plot_formats: ["png", "pdf"]
+  plot_dpi: 300
+  
+  # Reporting
+  generate_report: true
+  report_format: "markdown"
+  include_significance_tests: true
+  include_confidence_intervals: true
+
+# Runtime configuration
+runtime:
+  # Parallelization
+  max_parallel_evaluations: 4  # Number of models that can run concurrently
+  batch_size: 32
+  max_concurrent_requests: 8
+  
+  # Timeouts
+  per_sample_timeout: 120.0  # seconds
+  total_evaluation_timeout: 86400.0  # 24 hours
+  
+  # Error handling
+  max_retries: 3
+  retry_delay: 5.0  # seconds
+  continue_on_error: true
+  error_log_path: "/raid/$USER/adaptive-sd-logs/evaluation_errors.log"
+  
+  # Memory management
+  clear_cache_between_models: true
+  gpu_memory_fraction: 0.9
+  
+# Logging and monitoring
+logging:
+  log_level: "INFO"
+  log_file: "/raid/$USER/adaptive-sd-logs/evaluation.log"
+  log_predictions: false  # Too verbose for large scale
+  log_timing: true
+  log_resource_usage: true
+  
+  # Progress tracking
+  progress_bar: true
+  checkpoint_interval: 100  # samples
+  save_intermediate_results: true
+
+# Validation
+validation:
+  # Pre-evaluation checks
+  validate_models: true
+  validate_datasets: true
+  validate_metrics: true
+  
+  # Data quality checks
+  check_data_integrity: true
+  check_reference_availability: true
+  min_sample_length: 1
+  max_sample_length: 4096
+  
+  # Resource checks
+  check_gpu_memory: true
+  check_disk_space: true
+  min_free_disk_gb: 100

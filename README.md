@@ -30,6 +30,9 @@ python experiments/final/simple_theory_demo.py
 # For full evaluation with real models
 python experiments/final/setup_datasets.py
 python experiments/final/run_final_real_experiments.py
+
+# Run with comprehensive logging (for paper writing)
+python experiments/run_with_comprehensive_logging.py --name "paper_experiments"
 ```
 
 ## Repository Structure
@@ -45,7 +48,7 @@ adaptive-speculative-decoding/
 │   ├── algorithms/                    # Core algorithms
 │   ├── models/                        # Model implementations
 │   ├── serving/                       # Inference pipeline
-│   └── utils/                         # Utilities
+│   └── utils/                         # Utilities & logging systems
 ├── 📁 experiments/                    # Experiments
 │   ├── final/                         # Production experiments
 │   ├── development/                   # Development experiments
@@ -79,6 +82,72 @@ adaptive-speculative-decoding/
 | [`results/figures/paper_results.png`](results/figures/paper_results.png) | Main research figures |
 | [`src/algorithms/`](src/algorithms/) | Optimal stopping algorithms |
 | [`src/serving/pipeline.py`](src/serving/pipeline.py) | Production inference pipeline |
+
+## Comprehensive Experiment Logging
+
+This repository includes a state-of-the-art logging system for research-grade experiment tracking and paper writing:
+
+### 🔬 **Research-Grade Logging**
+- **Complete reproducibility**: Environment, hardware, software versions, Git state
+- **Real-time progress tracking**: ETA, processing speed, dataset/lambda progress
+- **Detailed data recording**: Every sample, latency, quality score, GPU usage
+- **Statistical analysis**: Significance tests, confidence intervals, effect sizes
+- **Paper-ready outputs**: Markdown reports + structured JSON data
+
+### 📊 **What Gets Logged**
+```python
+# Individual sample level
+{
+  "sample_id": "MMLU_1.0_0042",
+  "stage_latencies": [1474.3, 2947.1, 6189.4],  # Real measured times
+  "stage_outputs": ["Stage 0 output...", "Stage 1 output..."],
+  "quality_scores": [0.823, 0.891, 0.945],
+  "stopped_at_stage": 2,
+  "is_correct": true,
+  "gpu_memory_used": [14.2, 28.7, 62.4]  # GB
+}
+```
+
+### 🚀 **Real-time Progress Display**
+```
+📈 【Progress Report】 15:23:45
+┌─ Overall: 45.3% (7,378/16,342)
+├─ Elapsed: 2h 15m
+├─ Remaining: 2h 41m  
+├─ ETA: 18:04
+├─ Speed: 3.2 samples/sec
+└─ Avg time: 312ms/sample
+
+📊 Dataset Progress:
+  ✅ MMLU        : 100.0% (14,042/14,042)
+  🔄 GSM8K       :  45.8% (604/1,319)
+  ⏳ HumanEval   :   0.0% (0/164)
+  ⏳ TruthfulQA  :   0.0% (0/817)
+
+🎯 Lambda Progress:
+  ✅ λ=0.1: 100.0%  ✅ λ=0.5: 100.0%  🔄 λ=1.0: 45.8%
+```
+
+### 📝 **Usage**
+```python
+# Use comprehensive logging for paper experiments
+python experiments/run_with_comprehensive_logging.py --name "full_evaluation"
+
+# Integration with existing experiments
+from src.utils.experiment_hooks import track_experiment
+
+@track_experiment("my_experiment")
+def run_my_experiment():
+    # Your experiment code here
+    pass
+```
+
+Generated files:
+- `logs/*_comprehensive.md`: Paper-writing reference (human-readable)
+- `logs/raw_data/*_all_samples.json`: Complete raw data (240+ samples/file)
+- `logs/raw_data/*_timing_series.csv`: Time-series performance data
+
+For details, see [`docs/logging/COMPREHENSIVE_LOGGING_GUIDE.md`](docs/logging/COMPREHENSIVE_LOGGING_GUIDE.md)
 
 ## Results Summary
 

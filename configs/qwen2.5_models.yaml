@@ -84,19 +84,19 @@ evaluation:
   datasets:
     - name: "mmlu"
       subset: "test"
-      max_samples: 2000  # Research scale requirement
+      max_samples: 14042  # Full MMLU test set
       
     - name: "humaneval"  
       subset: "test"
-      max_samples: 1000  # Expanded from 164
+      max_samples: 164  # Full HumanEval dataset
       
     - name: "gsm8k"
       subset: "test"
-      max_samples: 1319  # Full dataset
+      max_samples: 1319  # Full GSM8K test set
       
     - name: "truthfulqa"
       subset: "validation"
-      max_samples: 1000
+      max_samples: 817  # Full TruthfulQA validation set
       
   metrics:
     - "accuracy"

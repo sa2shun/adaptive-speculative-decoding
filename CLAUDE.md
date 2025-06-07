@@ -86,6 +86,29 @@ black src/ tests/ experiments/
 flake8 src/ tests/
 ```
 
+### Comprehensive Experiment Logging (論文執筆用)
+```bash
+# 包括ログ付き実験実行（推奨）
+python experiments/run_with_comprehensive_logging.py --name "full_evaluation_v1"
+
+# 既存実験への統合
+from src.utils.experiment_hooks import track_experiment, log_section
+
+@track_experiment("my_experiment")
+def run_my_experiment():
+    # 実験コード
+    pass
+```
+
+**生成されるファイル:**
+- `logs/*_comprehensive.md`: 論文執筆用の完全な実験記録
+- `logs/*_data.json`: プログラム処理用の構造化データ
+
+**記録内容:**
+- 実験環境の完全記録（100%再現可能）
+- 実験結果の詳細（統計分析・アブレーション研究含む）
+- 論文執筆用リファレンス情報
+
 ## Architecture
 
 ### Core Components
@@ -143,7 +166,7 @@ The λ (lambda) parameter controls quality-speed tradeoff:
 ### Required Experimental Scope:
 1. **Model Scale**: Full Qwen2.5 7B→14B→32B→72B hierarchy (NO compromises)
 2. **Training Data**: Exactly 100,000 diverse, high-quality samples
-3. **Evaluation Data**: 2,000+ samples per dataset (MMLU, HumanEval, GSM8K, TruthfulQA)
+3. **Evaluation Data**: Full datasets - 14K MMLU, 164 HumanEval, 1.3K GSM8K, 817 TruthfulQA (16,342 total samples)
 4. **Lambda Values**: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0] (6 values comprehensive sweep)
 5. **Baseline Comparisons**: Single-model inference for each stage with identical conditions
 6. **Statistical Significance**: 5 independent runs with different seeds (1-5)

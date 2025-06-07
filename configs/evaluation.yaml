@@ -6,7 +6,7 @@ datasets:
   mmlu:
     path: "cais/mmlu"
     subset: "all"
-    max_samples: 2000
+    max_samples: 14042  # Full MMLU test set for maximum research rigor
     task_category: "knowledge"
     split: "test"
     metrics: ["accuracy", "f1_macro"]
@@ -14,7 +14,7 @@ datasets:
   humaneval:
     path: "openai/humaneval"
     subset: null
-    max_samples: 1000  # Expanded for research rigor
+    max_samples: 164  # Full HumanEval dataset (naturally small)
     task_category: "code_generation"
     split: "test"
     metrics: ["pass_at_1", "pass_at_10", "pass_at_100"]
@@ -22,7 +22,7 @@ datasets:
   gsm8k:
     path: "gsm8k"
     subset: "main"
-    max_samples: 1319  # Full dataset
+    max_samples: 1319  # Full GSM8K test set
     task_category: "mathematical_reasoning"
     split: "test"
     metrics: ["exact_match", "numeric_accuracy"]
@@ -30,7 +30,7 @@ datasets:
   truthfulqa:
     path: "truthful_qa"
     subset: "generation"
-    max_samples: 1000
+    max_samples: 817  # Full TruthfulQA validation set
     task_category: "truthfulness"
     split: "validation"
     metrics: ["bleurt", "rouge", "truthfulness_score"]

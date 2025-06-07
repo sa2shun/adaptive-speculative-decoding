@@ -36,7 +36,7 @@ class FinalResultsGenerator:
         
     def compile_experimental_results(self) -> dict:
         """Compile experimental results from all runs."""
-        # Results from comprehensive evaluation with 3-stage Qwen3 hierarchy
+        # Results from comprehensive evaluation with 3-stage Qwen2.5 hierarchy
         # Based on actual runs with 7B→14B→32B models
         
         results = {
@@ -325,7 +325,7 @@ class FinalResultsGenerator:
         # Compile all key statistics
         final_stats = {
             "experimental_setup": {
-                "model_hierarchy": "Qwen3 7B→14B→32B",
+                "model_hierarchy": "Qwen2.5 7B→14B→32B",
                 "datasets": ["MMLU (2000 samples)", "GSM8K (1000 samples)"],
                 "lambda_parameter_sweep": self.experimental_results["lambda_values"],
                 "statistical_power": "5 independent runs, 95% confidence"

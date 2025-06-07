@@ -8,7 +8,7 @@
 
 ## ✅ Implementation
 - [x] Minimal 32-dim MLP predictor (theoretically justified)
-- [x] Qwen3 model family (7B, 14B, 32B, 72B)
+- [x] Qwen2.5 model family (7B, 14B, 32B, 72B)
 - [x] Clean implementation in ~500 lines
 - [x] No unnecessary engineering complexity
 

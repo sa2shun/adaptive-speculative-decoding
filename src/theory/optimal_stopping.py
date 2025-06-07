@@ -36,7 +36,7 @@ class OptimalStoppingTheory:
     def __init__(self, params: TheoreticalParameters):
         self.params = params
         if params.quality_bounds is None:
-            # Theoretical quality bounds for Qwen3 models
+            # Theoretical quality bounds for Qwen2.5 models
             self.params.quality_bounds = [0.7, 0.8, 0.85, 0.9]
         if params.cost_ratios is None:
             # Relative computational costs (normalized)

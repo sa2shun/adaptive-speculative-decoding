@@ -123,10 +123,10 @@
 \hline
 \textbf{モデル} & \textbf{パラメータ数} & \textbf{相対コスト} & \textbf{GPU必要数} \\
 \hline
-Qwen3-7B & 70億 & 1.0× & 1台 \\
-Qwen3-14B & 140億 & 2.1× & 1台 \\
-Qwen3-32B & 320億 & 4.7× & 2台 \\
-Qwen3-72B & 720億 & 10.0× & 4台 \\
+Qwen2.5-7B & 70億 & 1.0× & 1台 \\
+Qwen2.5-14B & 140億 & 2.1× & 1台 \\
+Qwen2.5-32B & 320億 & 4.7× & 2台 \\
+Qwen2.5-72B & 720億 & 10.0× & 4台 \\
 \hline
 \end{tabular}
 \end{table}
@@ -307,7 +307,7 @@ R_T = O(\sqrt{T \log T})
 
 \subsection{使用したモデル階層}
 
-実験では、以下のQwen3モデル階層を使用しました：
+実験では、以下のQwen2.5モデル階層を使用しました：
 
 \begin{table}[H]
 \centering
@@ -316,15 +316,15 @@ R_T = O(\sqrt{T \log T})
 \hline
 \textbf{段階} & \textbf{モデル名} & \textbf{パラメータ数} & \textbf{コスト} & \textbf{GPU使用数} \\
 \hline
-0 & Qwen3-7B-Instruct & 70億 & 1.0 & 1台 \\
-1 & Qwen3-14B-Instruct & 140億 & 2.1 & 1台 \\
-2 & Qwen3-32B-Instruct & 320億 & 4.7 & 2台 \\
-3 & Qwen3-72B-Instruct & 720億 & 10.0 & 4台 \\
+0 & Qwen2.5-7B-Instruct & 70億 & 1.0 & 1台 \\
+1 & Qwen2.5-14B-Instruct & 140億 & 2.1 & 1台 \\
+2 & Qwen2.5-32B-Instruct & 320億 & 4.7 & 2台 \\
+3 & Qwen2.5-72B-Instruct & 720億 & 10.0 & 4台 \\
 \hline
 \end{tabular}
 \end{table}
 
-\textbf{なぜQwen3を選んだか？}
+\textbf{なぜQwen2.5を選んだか？}
 \begin{itemize}
 \item 最新の高性能モデル群
 \item 階層的に異なるサイズが利用可能

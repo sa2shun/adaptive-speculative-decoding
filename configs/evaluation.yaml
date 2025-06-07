@@ -48,21 +48,21 @@ experiment:
   
   # Baseline comparisons
   baselines:
-    - name: "qwen3-7b-only"
-      model: "qwen3-7b"
+    - name: "qwen2.5-7b-only"
+      model: "qwen2.5-7b"
       strategy: "single_model"
-    - name: "qwen3-14b-only"
-      model: "qwen3-14b"
+    - name: "qwen2.5-14b-only"
+      model: "qwen2.5-14b"
       strategy: "single_model"
-    - name: "qwen3-32b-only"
-      model: "qwen3-32b"
+    - name: "qwen2.5-32b-only"
+      model: "qwen2.5-32b"
       strategy: "single_model"
-    - name: "qwen3-72b-only"
-      model: "qwen3-72b"
+    - name: "qwen2.5-72b-only"
+      model: "qwen2.5-72b"
       strategy: "single_model"
     - name: "static-pipeline"
       strategy: "static_multi_stage"
-      stages: ["qwen3-7b", "qwen3-14b", "qwen3-32b", "qwen3-72b"]
+      stages: ["qwen2.5-7b", "qwen2.5-14b", "qwen2.5-32b", "qwen2.5-72b"]
     - name: "random-stopping"
       strategy: "random_stopping"
       stop_probability: 0.25

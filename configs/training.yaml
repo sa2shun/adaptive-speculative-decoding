@@ -100,7 +100,7 @@ data_generation:
   # Model execution settings
   model_execution:
     use_real_models: true  # NO simulation
-    model_config: "configs/qwen3_models.yaml"
+    model_config: "configs/qwen2.5_models.yaml"
     max_tokens_per_stage: 256
     temperature: 0.7
     top_p: 0.9

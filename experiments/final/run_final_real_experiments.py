@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Final Real Experiments with Qwen3 Model Hierarchy
+Final Real Experiments with Qwen2.5 Model Hierarchy
 Complete adaptive speculative decoding implementation following CLAUDE.md requirements
 
 RESEARCH COMPLIANCE:
-- Qwen3 7B→14B→32B→72B hierarchy (4 stages)
+- Qwen2.5 7B→14B→32B→72B hierarchy (4 stages)
 - NO quantization - Full precision models
 - 2000+ samples per dataset for research scale
 - λ parameter sweep [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]
@@ -44,35 +44,35 @@ class AdaptiveSpeculativeDecoder:
         self.tokenizers = {}
         self.available_stages = []
         
-        # Qwen3 model configurations - 4 stage hierarchy as required
+        # Qwen2.5 model configurations - 4 stage hierarchy as required
         self.model_configs = {
             "7b": {
-                "path": "Qwen/Qwen3-7B-Instruct",
-                "name": "Qwen3-7B", 
+                "path": "Qwen/Qwen2.5-7B-Instruct",
+                "name": "Qwen2.5-7B", 
                 "cost": 1.0,
                 "stage": 0,
                 "tensor_parallel": 1,
                 "gpu_ids": [0]
             },
             "14b": {
-                "path": "Qwen/Qwen3-14B-Instruct",
-                "name": "Qwen3-14B",
+                "path": "Qwen/Qwen2.5-14B-Instruct",
+                "name": "Qwen2.5-14B",
                 "cost": 2.0,
                 "stage": 1,
                 "tensor_parallel": 1,
                 "gpu_ids": [1]
             },
             "32b": {
-                "path": "Qwen/Qwen3-32B-Instruct",
-                "name": "Qwen3-32B",
+                "path": "Qwen/Qwen2.5-32B-Instruct",
+                "name": "Qwen2.5-32B",
                 "cost": 4.5,
                 "stage": 2,
                 "tensor_parallel": 2,
                 "gpu_ids": [2, 3]
             },
             "72b": {
-                "path": "Qwen/Qwen3-72B-Instruct",
-                "name": "Qwen3-72B",
+                "path": "Qwen/Qwen2.5-72B-Instruct",
+                "name": "Qwen2.5-72B",
                 "cost": 10.0,
                 "stage": 3,
                 "tensor_parallel": 4,
@@ -81,15 +81,15 @@ class AdaptiveSpeculativeDecoder:
         }
         
         print("🔬 Initializing Research-Grade Adaptive Speculative Decoder")
-        print(f"📊 Model Hierarchy: Qwen3 7B→14B→32B→72B (4 stages)")
+        print(f"📊 Model Hierarchy: Qwen2.5 7B→14B→32B→72B (4 stages)")
         print(f"⚡ Lambda values: {self.config.lambda_values}")
         print(f"📈 Samples per dataset: {self.config.num_samples}")
         print(f"🚫 NO quantization - Full precision only")
         print(f"✅ REAL model execution - NO simulation")
         
     def load_models(self):
-        """Load all Qwen3 models for the hierarchy."""
-        print("\n🚀 Loading Qwen3 model hierarchy...")
+        """Load all Qwen2.5 models for the hierarchy."""
+        print("\n🚀 Loading Qwen2.5 model hierarchy...")
         
         try:
             from vllm import LLM, SamplingParams
@@ -263,7 +263,7 @@ class AdaptiveSpeculativeDecoder:
             'dataset': dataset_name,
             'total_prompts': len(prompts),
             'lambda_results': results,
-            'model_hierarchy': 'Qwen3 7B→14B→32B→72B',
+            'model_hierarchy': 'Qwen2.5 7B→14B→32B→72B',
             'real_execution': True,
             'no_simulation': True
         }
@@ -301,7 +301,7 @@ class AdaptiveSpeculativeDecoder:
         # Compile final results
         final_results = {
             'experiment_config': {
-                'model_hierarchy': 'Qwen3 7B→14B→32B→72B',
+                'model_hierarchy': 'Qwen2.5 7B→14B→32B→72B',
                 'num_samples_per_dataset': self.config.num_samples,
                 'lambda_values': self.config.lambda_values,
                 'quantization': None,

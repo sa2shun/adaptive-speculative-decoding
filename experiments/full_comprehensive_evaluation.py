@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Comprehensive Evaluation of Adaptive Speculative Decoding
-Research-grade experiments with full Qwen3 hierarchy and real datasets
+Research-grade experiments with full Qwen2.5 hierarchy and real datasets
 """
 
 import json
@@ -49,7 +49,7 @@ class AdaptiveSpeculativeDecoder:
         self.load_quality_predictor()
     
     def load_models(self):
-        """Load all available Qwen3 models."""
+        """Load all available Qwen2.5 models."""
         model_configs = {
             "7b": "qwen3-7b",
             "14b": "qwen3-14b", 
@@ -585,7 +585,7 @@ def main():
     """Run comprehensive evaluation."""
     parser = argparse.ArgumentParser(description="Comprehensive adaptive speculative decoding evaluation")
     parser.add_argument("--model-path", default="/raid/$USER/adaptive-sd-models",
-                       help="Path to Qwen3 models")
+                       help="Path to Qwen2.5 models")
     parser.add_argument("--predictor-path", default="/raid/$USER/adaptive-sd-models/quality-predictor",
                        help="Path to quality predictor")
     parser.add_argument("--output-dir", default="/raid/$USER/adaptive-sd-results/comprehensive_evaluation",

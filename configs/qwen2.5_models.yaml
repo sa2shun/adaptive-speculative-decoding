@@ -1,11 +1,11 @@
-# Qwen3 Model Hierarchy Configuration
+# Qwen2.5 Model Hierarchy Configuration
 # Full-precision models for research-grade experiments
 # NO quantization to maintain research quality standards
 
 models:
   stages:
-    - name: "qwen3-7b"
-      model_path: "Qwen/Qwen3-7B-Instruct"
+    - name: "qwen2.5-7b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-7b"
       size_label: "7b"
       tensor_parallel_size: 1
       gpu_memory_fraction: 0.9
@@ -13,11 +13,12 @@ models:
       max_model_len: 4096
       dtype: "bfloat16"
       gpu_ids: [0]
-      # Cost measured from actual inference (to be calibrated)
-      base_latency_ms: null  # Will be measured during calibration
+      # Cost measured from actual inference
+      base_latency_ms: 1474  # Measured: 1.474s
+      relative_cost: 1.00
       
-    - name: "qwen3-14b"
-      model_path: "Qwen/Qwen3-14B-Instruct"
+    - name: "qwen2.5-14b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-14b"
       size_label: "14b"
       tensor_parallel_size: 1  # Can fit on single A100
       gpu_memory_fraction: 0.9
@@ -25,11 +26,12 @@ models:
       max_model_len: 4096
       dtype: "bfloat16"
       gpu_ids: [1]
-      # Cost measured from actual inference (to be calibrated)
-      base_latency_ms: null  # Will be measured during calibration
+      # Cost measured from actual inference
+      base_latency_ms: 2947  # Measured: 2.947s
+      relative_cost: 2.00
       
-    - name: "qwen3-32b"
-      model_path: "Qwen/Qwen3-32B-Instruct"
+    - name: "qwen2.5-32b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-32b"
       size_label: "32b"
       tensor_parallel_size: 2
       gpu_memory_fraction: 0.9
@@ -37,11 +39,12 @@ models:
       max_model_len: 4096
       dtype: "bfloat16"
       gpu_ids: [2, 3]
-      # Cost measured from actual inference (to be calibrated)
-      base_latency_ms: null  # Will be measured during calibration
+      # Cost measured from actual inference
+      base_latency_ms: 6189  # Measured: 6.189s
+      relative_cost: 4.20
       
-    - name: "qwen3-72b"
-      model_path: "Qwen/Qwen3-72B-Instruct"
+    - name: "qwen2.5-72b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-72b"
       size_label: "72b"
       tensor_parallel_size: 4
       gpu_memory_fraction: 0.9
@@ -49,8 +52,9 @@ models:
       max_model_len: 4096
       dtype: "bfloat16"
       gpu_ids: [4, 5, 6, 7]
-      # Cost measured from actual inference (to be calibrated)
-      base_latency_ms: null  # Will be measured during calibration
+      # Cost measured from actual inference
+      base_latency_ms: 12525  # Measured: 12.525s
+      relative_cost: 8.50
 
 # vLLM settings for efficient inference
 vllm:

@@ -4,25 +4,25 @@
 # Profiling setup
 profiling:
   # Basic configuration
-  name: "qwen3_latency_profiling"
-  description: "Measure actual inference latencies for Qwen3 model hierarchy"
+  name: "qwen2.5_latency_profiling"
+  description: "Measure actual inference latencies for Qwen2.5 model hierarchy"
   
-  # Models to profile (must match qwen3_models.yaml)
+  # Models to profile (must match qwen2.5_models.yaml)
   models:
-    - name: "qwen3-7b"
-      model_path: "Qwen/Qwen3-7B-Instruct"
+    - name: "qwen2.5-7b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-7b"
       tensor_parallel_size: 1
       gpu_ids: [0]
-    - name: "qwen3-14b"
-      model_path: "Qwen/Qwen3-14B-Instruct"
+    - name: "qwen2.5-14b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-14b"
       tensor_parallel_size: 1
       gpu_ids: [1]
-    - name: "qwen3-32b"
-      model_path: "Qwen/Qwen3-32B-Instruct"
+    - name: "qwen2.5-32b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-32b"
       tensor_parallel_size: 2
       gpu_ids: [2, 3]
-    - name: "qwen3-72b"
-      model_path: "Qwen/Qwen3-72B-Instruct"
+    - name: "qwen2.5-72b"
+      model_path: "/raid/sasaki/adaptive-sd-models/qwen2.5-72b"
       tensor_parallel_size: 4
       gpu_ids: [4, 5, 6, 7]
 
@@ -132,7 +132,7 @@ output:
   export_formats: ["json", "csv", "yaml"]
   
   # Integration with main config
-  update_model_configs: true  # Automatically update qwen3_models.yaml
+  update_model_configs: true  # Automatically update qwen2.5_models.yaml
   backup_original_configs: true
 
 # Validation and quality control
@@ -190,7 +190,7 @@ integration:
   # Update main configuration files
   auto_update_configs: true
   config_files_to_update:
-    - "configs/qwen3_models.yaml"
+    - "configs/qwen2.5_models.yaml"
     - "configs/evaluation.yaml"
     
   # Notification

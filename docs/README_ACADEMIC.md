@@ -28,11 +28,11 @@ Our method provides:
 from src.minimal_adaptive_decoder import MinimalAdaptiveDecoder
 
 # Initialize with theoretical optimal thresholds
-decoder = MinimalAdaptiveDecoder("configs/qwen3_models.yaml")
+decoder = MinimalAdaptiveDecoder("configs/qwen2.5_models.yaml")
 
 # Adaptive inference
 result = decoder.decode("Explain quantum computing")
-print(f"Used: Qwen3-{result.selected_stage}, Speedup: {10/result.cost:.1f}x")
+print(f"Used: Qwen2.5-{result.selected_stage}, Speedup: {10/result.cost:.1f}x")
 ```
 
 ## Reproducing Paper Results
@@ -57,11 +57,11 @@ Produces LaTeX table with p-values and effect sizes.
 
 ## Model Configuration
 
-Using Qwen3 family for theoretical consistency:
-- **Qwen3-7B**: Base model (cost=1.0)
-- **Qwen3-14B**: 2x cost, +10% quality
-- **Qwen3-32B**: 4.5x cost, +15% quality  
-- **Qwen3-72B**: 10x cost, +20% quality
+Using Qwen2.5 family for theoretical consistency:
+- **Qwen2.5-7B**: Base model (cost=1.0)
+- **Qwen2.5-14B**: 2x cost, +10% quality
+- **Qwen2.5-32B**: 4.5x cost, +15% quality  
+- **Qwen2.5-72B**: 10x cost, +20% quality
 
 All models use INT8 quantization for memory efficiency.
 
@@ -95,7 +95,7 @@ We compare against theoretically motivated baselines:
 
 - Python 3.10+
 - PyTorch 2.0+
-- 8 GPUs (for full Qwen3-72B)
+- 8 GPUs (for full Qwen2.5-72B)
 - ~300GB disk space for models
 
 ## License

@@ -15,6 +15,7 @@ from ..models.stage import Stage, StageManager
 from ..models.predictor import QualityPredictor, FeatureExtractor
 from ..algorithms.dp_solver import optimal_stopping_rule, bayesian_adjustment
 from .cache_manager import KVCacheManager
+from ..config.cost_config import get_measured_cost
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +218,9 @@ class AdaptiveSpeculativePipeline:
                     self.cache_manager.allocate(request_id, stage_idx, cache_data)
             
             outputs.append(stage_output[0])
-            costs.append(stage.cost_per_token)
+            # Use measured cost instead of parameter-based cost
+            measured_cost = get_measured_cost(stage_name)
+            costs.append(measured_cost)
             total_tokens += len(stage_output[0].split())
             
             # Predict acceptance probability (except for last stage)

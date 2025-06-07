@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Research-Grade Baseline Comparison for Adaptive Speculative Decoding
-Compares against single-model baselines using Qwen3 hierarchy
+Compares against single-model baselines using Qwen2.5 hierarchy
 
 RESEARCH COMPLIANCE:
-- Qwen3 7B→14B→32B→72B single model baselines
+- Qwen2.5 7B→14B→32B→72B single model baselines
 - NO quantization - Full precision models
 - 2000+ samples per dataset for research scale
 - Statistical significance testing
@@ -39,41 +39,41 @@ class BaselineConfig:
             self.datasets = ['mmlu', 'humaneval', 'gsm8k', 'truthfulqa']
 
 class BaselineComparator:
-    """Research-grade baseline comparison for Qwen3 hierarchy."""
+    """Research-grade baseline comparison for Qwen2.5 hierarchy."""
     
     def __init__(self, config: BaselineConfig):
         self.config = config
         self.models = {}
         
-        # Qwen3 model configurations - 4 stage hierarchy as required
+        # Qwen2.5 model configurations - 4 stage hierarchy as required
         self.model_configs = {
-            "qwen3-7b": {
-                "path": "Qwen/Qwen3-7B-Instruct",
-                "name": "Qwen3-7B",
+            "qwen2.5-7b": {
+                "path": "Qwen/Qwen2.5-7B-Instruct",
+                "name": "Qwen2.5-7B",
                 "stage": 0,
                 "tensor_parallel": 1,
                 "gpu_ids": [0],
                 "cost_multiplier": 1.0
             },
-            "qwen3-14b": {
-                "path": "Qwen/Qwen3-14B-Instruct", 
-                "name": "Qwen3-14B",
+            "qwen2.5-14b": {
+                "path": "Qwen/Qwen2.5-14B-Instruct", 
+                "name": "Qwen2.5-14B",
                 "stage": 1,
                 "tensor_parallel": 1,
                 "gpu_ids": [1],
                 "cost_multiplier": 2.0
             },
-            "qwen3-32b": {
-                "path": "Qwen/Qwen3-32B-Instruct",
-                "name": "Qwen3-32B",
+            "qwen2.5-32b": {
+                "path": "Qwen/Qwen2.5-32B-Instruct",
+                "name": "Qwen2.5-32B",
                 "stage": 2,
                 "tensor_parallel": 2,
                 "gpu_ids": [2, 3],
                 "cost_multiplier": 4.5
             },
-            "qwen3-72b": {
-                "path": "Qwen/Qwen3-72B-Instruct",
-                "name": "Qwen3-72B",
+            "qwen2.5-72b": {
+                "path": "Qwen/Qwen2.5-72B-Instruct",
+                "name": "Qwen2.5-72B",
                 "stage": 3,
                 "tensor_parallel": 4,
                 "gpu_ids": [4, 5, 6, 7],
@@ -82,13 +82,13 @@ class BaselineComparator:
         }
         
         logger.info("🔬 Initializing Research-Grade Baseline Comparator")
-        logger.info(f"📊 Model Hierarchy: Qwen3 7B→14B→32B→72B")
+        logger.info(f"📊 Model Hierarchy: Qwen2.5 7B→14B→32B→72B")
         logger.info(f"📈 Samples per dataset: {self.config.num_samples}")
         logger.info(f"🚫 NO quantization - Full precision only")
         logger.info(f"✅ REAL model execution - NO simulation")
         
     def load_model(self, model_key: str):
-        """Load a specific Qwen3 model."""
+        """Load a specific Qwen2.5 model."""
         if model_key in self.models:
             logger.info(f"Model {model_key} already loaded")
             return True
@@ -227,7 +227,7 @@ class BaselineComparator:
         dataset_results = {
             'dataset': dataset_name,
             'total_prompts': len(prompts),
-            'model_hierarchy': 'Qwen3 7B→14B→32B→72B',
+            'model_hierarchy': 'Qwen2.5 7B→14B→32B→72B',
             'baselines': {},
             'comparison': {}
         }
@@ -321,7 +321,7 @@ class BaselineComparator:
         # Compile final results
         final_results = {
             'experiment_config': {
-                'model_hierarchy': 'Qwen3 7B→14B→32B→72B',
+                'model_hierarchy': 'Qwen2.5 7B→14B→32B→72B',
                 'num_samples_per_dataset': self.config.num_samples,
                 'datasets': self.config.datasets,
                 'quantization': None,

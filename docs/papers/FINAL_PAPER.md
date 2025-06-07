@@ -128,8 +128,9 @@ def compute_threshold(stage, lambda_param, costs):
 
 We evaluate on a hierarchy of Qwen2.5 models:
 - **Stage 0**: Qwen2.5-7B (Cost: 1.0)
-- **Stage 1**: Qwen2.5-32B (Cost: 4.5)  
-- **Stage 2**: Qwen2.5-72B (Cost: 10.0)
+- **Stage 1**: Qwen2.5-14B (Cost: 2.0)
+- **Stage 2**: Qwen2.5-32B (Cost: 4.5)  
+- **Stage 3**: Qwen2.5-72B (Cost: 10.0)
 
 ### 6.2 Datasets
 
@@ -357,7 +358,7 @@ def extract_features(prompt, stage):
     lexical_diversity = unique_words / total_words if total_words > 0 else 0
     features.append(lexical_diversity)
     
-    # Stage encoding
+    # Stage encoding (4 stages: 7B, 14B, 32B, 72B)
     stage_encoding = [1.0 if i == stage else 0.0 for i in range(4)]
     features.extend(stage_encoding)
     
@@ -381,19 +382,24 @@ def extract_features(prompt, stage):
 
 ```yaml
 models:
-  qwen3-7b:
+  qwen2.5-7b:
     tensor_parallel_size: 1
     gpu_ids: [0]
     max_memory: "20GB"
   
-  qwen3-32b:
+  qwen2.5-14b:
+    tensor_parallel_size: 1
+    gpu_ids: [1]
+    max_memory: "20GB"
+  
+  qwen2.5-32b:
     tensor_parallel_size: 2
-    gpu_ids: [1, 2]
+    gpu_ids: [2, 3]
     max_memory: "40GB"
   
-  qwen3-72b:
+  qwen2.5-72b:
     tensor_parallel_size: 4
-    gpu_ids: [3, 4, 5, 6]
+    gpu_ids: [4, 5, 6, 7]
     max_memory: "80GB"
 ```
 

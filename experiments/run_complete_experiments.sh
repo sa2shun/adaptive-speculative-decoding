@@ -1,6 +1,6 @@
 #!/bin/bash
 # Complete Experimental Pipeline for Adaptive Speculative Decoding
-# Research-grade experiments with Qwen3 7B→14B→32B→72B hierarchy
+# Research-grade experiments with Qwen2.5 7B→14B→32B→72B hierarchy
 # NO compromises on scale, precision, or rigor
 
 set -e  # Exit on any error
@@ -26,7 +26,7 @@ LOGS_DIR="/raid/$USER/adaptive-sd-logs"
 mkdir -p "$MODELS_DIR" "$TRAINING_DATA_DIR" "$EVAL_DATA_DIR" "$RESULTS_DIR" "$LOGS_DIR"
 
 # Experiment configuration
-EXPERIMENT_NAME="complete_qwen3_evaluation_$(date +%Y%m%d_%H%M%S)"
+EXPERIMENT_NAME="complete_qwen2_5_evaluation_$(date +%Y%m%d_%H%M%S)"
 EXPERIMENT_DIR="$RESULTS_DIR/$EXPERIMENT_NAME"
 mkdir -p "$EXPERIMENT_DIR"
 
@@ -55,7 +55,7 @@ trap cleanup EXIT
 log "=== STARTING COMPLETE ADAPTIVE SPECULATIVE DECODING EXPERIMENTS ==="
 log "Experiment Name: $EXPERIMENT_NAME"
 log "Results Directory: $EXPERIMENT_DIR"
-log "Using 8x A100 GPUs for full-precision Qwen3 models"
+log "Using 8x A100 GPUs for full-precision Qwen2.5 models"
 
 # =============================================================================
 # PHASE 1: ENVIRONMENT SETUP AND VALIDATION (4 hours)
@@ -76,10 +76,10 @@ if [ "$GPU_COUNT" -lt 8 ]; then
 fi
 log "Found $GPU_COUNT GPUs - proceeding with full-scale experiments"
 
-log "1.2 Downloading Qwen3 models..."
-python scripts/download_qwen3_models.py \
+log "1.2 Downloading Qwen2.5 models..."
+python scripts/download_qwen2.5_models.py \
     --storage-path "$MODELS_DIR" \
-    --models "Qwen/Qwen3-7B-Instruct,Qwen/Qwen3-14B-Instruct,Qwen/Qwen3-32B-Instruct,Qwen/Qwen3-72B-Instruct" \
+    --models "Qwen/Qwen2.5-7B-Instruct,Qwen/Qwen2.5-14B-Instruct,Qwen/Qwen2.5-32B-Instruct,Qwen/Qwen2.5-72B-Instruct" \
     --verify-checksums \
     2>&1 | tee "$EXPERIMENT_DIR/model_download.log"
 
@@ -90,7 +90,7 @@ sys.path.append('.')
 from src.serving.real_model_pipeline import RealModelPipeline
 
 try:
-    pipeline = RealModelPipeline('configs/qwen3_models.yaml')
+    pipeline = RealModelPipeline('configs/qwen2.5_models.yaml')
     print('Pipeline configuration validated successfully')
 except Exception as e:
     print(f'Pipeline validation failed: {e}')
@@ -171,7 +171,7 @@ for LAMBDA in "${LAMBDA_VALUES[@]}"; do
         
         python experiments/evaluate_pipeline.py \
             --config configs/evaluation.yaml \
-            --model-config configs/qwen3_models.yaml \
+            --model-config configs/qwen2.5_models.yaml \
             --datasets mmlu,humaneval,gsm8k,truthfulqa \
             --lambda "$LAMBDA" \
             --seed "$SEED" \
@@ -189,7 +189,7 @@ done
 log "3.2 Running baseline comparisons..."
 
 # Single-model baselines
-MODELS=("qwen3-7b" "qwen3-14b" "qwen3-32b" "qwen3-72b")
+MODELS=("qwen2.5-7b" "qwen2.5-14b" "qwen2.5-32b" "qwen2.5-72b")
 
 for MODEL in "${MODELS[@]}"; do
     for SEED in "${SEEDS[@]}"; do
@@ -201,7 +201,7 @@ for MODEL in "${MODELS[@]}"; do
         
         python experiments/run_baseline_comparison.py \
             --model "$MODEL" \
-            --config configs/qwen3_models.yaml \
+            --config configs/qwen2.5_models.yaml \
             --datasets mmlu,humaneval,gsm8k,truthfulqa \
             --seed "$SEED" \
             --output-dir "$BASELINE_DIR" \
@@ -279,7 +279,7 @@ cat > "$EXPERIMENT_DIR/EXPERIMENT_REPORT.md" << EOF
 
 ## Configuration
 
-- **Model Hierarchy:** Qwen3 7B→14B→32B→72B (4 stages)
+- **Model Hierarchy:** Qwen2.5 7B→14B→32B→72B (4 stages)
 - **Precision:** Full precision (BF16) - NO quantization
 - **Hardware:** 8x NVIDIA A100 (80GB each)
 - **Training Data:** 100,000 real samples (no simulation)
@@ -303,7 +303,7 @@ See analysis/ directory for detailed statistical results and figures/ directory 
 ## Quality Assurance
 
 All experiments verified to use:
-- Real Qwen3 model inference (no mocking)
+- Real Qwen2.5 model inference (no mocking)
 - Actual GPU latency measurements
 - Full-precision computation
 - Research-grade evaluation protocols

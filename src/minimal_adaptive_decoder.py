@@ -89,7 +89,7 @@ class MinimalAdaptiveDecoder:
         
         # Load models (INT8 quantized)
         self.models = self._load_models()
-        self.tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3-7B")
+        self.tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-7B-Instruct")
         
         # Simple quality predictor
         self.predictor = MinimalQualityPredictor()
@@ -107,7 +107,7 @@ class MinimalAdaptiveDecoder:
         return OptimalStoppingTheory(params)
     
     def _load_models(self) -> List[AutoModelForCausalLM]:
-        """Load Qwen3 models with INT8 quantization."""
+        """Load Qwen2.5 models with INT8 quantization."""
         models = []
         for stage in self.config['models']['stages']:
             # In practice, would load with INT8
@@ -165,7 +165,7 @@ class MinimalAdaptiveDecoder:
         
         # Generate with selected model
         # In practice: output = self.models[selected_stage].generate(...)
-        output = f"[Generated with Qwen3-{self.config['models']['stages'][selected_stage]['size_label']}]"
+        output = f"[Generated with Qwen2.5-{self.config['models']['stages'][selected_stage]['size_label']}]"
         
         # Compute theoretical regret (for analysis)
         input_difficulty = self._estimate_difficulty(prompt)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate 100K training samples with REAL Qwen3 model inference
+Generate 100K training samples with REAL Qwen2.5 model inference
 NO simulation - research-grade quality data generation
 """
 
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class RealModelTrainingDataGenerator:
-    """Generate training data using actual Qwen3 models."""
+    """Generate training data using actual Qwen2.5 models."""
     
     def __init__(self, model_base_path: str):
         self.model_base_path = model_base_path
@@ -41,7 +41,7 @@ class RealModelTrainingDataGenerator:
         }
     
     def load_models(self):
-        """Load all Qwen3 models for data generation."""
+        """Load all Qwen2.5 models for data generation."""
         model_configs = {
             "7b": "qwen3-7b",
             "14b": "qwen3-14b", 
@@ -337,7 +337,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Generate large-scale training data")
     parser.add_argument("--model-path", default="/raid/$USER/adaptive-sd-models", 
-                       help="Path to Qwen3 models")
+                       help="Path to Qwen2.5 models")
     parser.add_argument("--output-path", default="/raid/$USER/adaptive-sd-training-data",
                        help="Output directory for training data")
     parser.add_argument("--num-samples", type=int, default=100000,

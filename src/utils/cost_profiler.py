@@ -1,7 +1,7 @@
 """
 Cost Profiler for Adaptive Speculative Decoding
 
-Measures actual inference latencies for Qwen3 model hierarchy to create
+Measures actual inference latencies for Qwen2.5 model hierarchy to create
 realistic cost models instead of theoretical estimates.
 
 This module provides:
@@ -261,10 +261,10 @@ class CostProfiler:
         """Create mock measurement for testing."""
         # Realistic latency estimates based on model size
         size_multipliers = {
-            'qwen3-7b': 1.0,
-            'qwen3-14b': 2.0,
-            'qwen3-32b': 4.5,
-            'qwen3-72b': 10.0
+            'qwen2.5-7b': 1.0,
+            'qwen2.5-14b': 2.0,
+            'qwen2.5-32b': 4.5,
+            'qwen2.5-72b': 10.0
         }
         
         base_latency = 0.1  # 100ms base
@@ -566,14 +566,14 @@ class CostProfiler:
             
         self.logger.info("Updating configuration files...")
         
-        # Update qwen3_models.yaml
-        qwen3_config_path = Path("configs/qwen3_models.yaml")
-        if qwen3_config_path.exists():
-            with open(qwen3_config_path, 'r') as f:
-                qwen3_config = yaml.safe_load(f)
+        # Update qwen2.5_models.yaml
+        qwen2_5_config_path = Path("configs/qwen2.5_models.yaml")
+        if qwen2_5_config_path.exists():
+            with open(qwen2_5_config_path, 'r') as f:
+                qwen2_5_config = yaml.safe_load(f)
             
             # Update latency measurements
-            for stage in qwen3_config['models']['stages']:
+            for stage in qwen2_5_config['models']['stages']:
                 model_name = stage['name']
                 if model_name in self.cost_models:
                     # Use median latency as base
@@ -587,12 +587,12 @@ class CostProfiler:
             
             # Backup original
             if self.config['output']['backup_original_configs']:
-                backup_path = qwen3_config_path.with_suffix('.yaml.backup')
-                qwen3_config_path.rename(backup_path)
+                backup_path = qwen2_5_config_path.with_suffix('.yaml.backup')
+                qwen2_5_config_path.rename(backup_path)
             
             # Save updated config
-            with open(qwen3_config_path, 'w') as f:
-                yaml.dump(qwen3_config, f, indent=2)
+            with open(qwen2_5_config_path, 'w') as f:
+                yaml.dump(qwen2_5_config, f, indent=2)
         
         self.logger.info("Configuration files updated")
     

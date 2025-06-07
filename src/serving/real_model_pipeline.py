@@ -2,11 +2,11 @@
 Real Model Execution Pipeline for Adaptive Speculative Decoding
 
 This module implements the core adaptive speculative decoding pipeline using
-REAL Qwen3 models with NO simulation components. Every inference decision
+REAL Qwen2.5 models with NO simulation components. Every inference decision
 is made using actual model outputs and measured latencies.
 
 Key features:
-- 4-stage Qwen3 hierarchy: 7B→14B→32B→72B
+- 4-stage Qwen2.5 hierarchy: 7B→14B→32B→72B
 - Real-time cost measurement and optimization
 - Dynamic stopping based on quality predictor
 - Full precision inference (no quantization)
@@ -192,7 +192,7 @@ class RealModelStage:
 class RealModelPipeline:
     """Main adaptive speculative decoding pipeline with real models."""
     
-    def __init__(self, config_path: str = "configs/qwen3_models.yaml"):
+    def __init__(self, config_path: str = "configs/qwen2.5_models.yaml"):
         """Initialize the real model pipeline."""
         self.config_path = Path(config_path)
         self.config = self._load_config()
@@ -519,7 +519,7 @@ class RealModelPipeline:
         self.logger.info("Pipeline shutdown completed")
 
 # Factory function for easy pipeline creation
-def create_real_pipeline(config_path: str = "configs/qwen3_models.yaml") -> RealModelPipeline:
+def create_real_pipeline(config_path: str = "configs/qwen2.5_models.yaml") -> RealModelPipeline:
     """Create and initialize a real model pipeline."""
     pipeline = RealModelPipeline(config_path)
     pipeline.initialize()
@@ -531,7 +531,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="Real Model Pipeline Test")
-    parser.add_argument("--config", default="configs/qwen3_models.yaml")
+    parser.add_argument("--config", default="configs/qwen2.5_models.yaml")
     parser.add_argument("--prompt", default="What is artificial intelligence?")
     parser.add_argument("--lambda", type=float, default=1.0, dest="lambda_param")
     

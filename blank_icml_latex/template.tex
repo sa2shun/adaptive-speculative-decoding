@@ -333,12 +333,12 @@ We design comprehensive experiments to validate our theoretical framework and de
 
 \subsection{Model Hierarchy Configuration}
 
-We implement a three-stage hierarchy using state-of-the-art Qwen3 models, chosen for their strong performance across diverse tasks and publicly available access:
+We implement a three-stage hierarchy using state-of-the-art Qwen2.5 models, chosen for their strong performance across diverse tasks and publicly available access:
 
 \begin{itemize}
-\item \textbf{Stage 0}: Qwen/Qwen3-7B-Instruct (7B parameters, cost $c_1 = 1.0$)
-\item \textbf{Stage 1}: Qwen/Qwen3-32B-Instruct (32B parameters, cost $c_2 \approx 4.5$)
-\item \textbf{Stage 2}: Qwen/Qwen3-72B-Instruct (72B parameters, cost $c_3 \approx 10.0$)
+\item \textbf{Stage 0}: Qwen/Qwen2.5-7B-Instruct (7B parameters, cost $c_1 = 1.0$)
+\item \textbf{Stage 1}: Qwen/Qwen2.5-32B-Instruct (32B parameters, cost $c_2 \approx 4.5$)
+\item \textbf{Stage 2}: Qwen/Qwen2.5-72B-Instruct (72B parameters, cost $c_3 \approx 10.0$)
 \end{itemize}
 
 Cost ratios are determined through empirical latency measurements on our target hardware configuration, reflecting realistic deployment scenarios.
@@ -712,19 +712,19 @@ The hierarchical model setup utilized the following configuration:
 \begin{verbatim}
 models:
   stage_0:
-    model: "Qwen/Qwen3-7B-Instruct"
+    model: "Qwen/Qwen2.5-7B-Instruct"
     tensor_parallel_size: 1
     gpu_memory_utilization: 0.9
     max_model_len: 4096
     
   stage_1:
-    model: "Qwen/Qwen3-32B-Instruct" 
+    model: "Qwen/Qwen2.5-32B-Instruct" 
     tensor_parallel_size: 2
     gpu_memory_utilization: 0.9
     max_model_len: 4096
     
   stage_2:
-    model: "Qwen/Qwen3-72B-Instruct"
+    model: "Qwen/Qwen2.5-72B-Instruct"
     tensor_parallel_size: 4
     gpu_memory_utilization: 0.9
     max_model_len: 4096

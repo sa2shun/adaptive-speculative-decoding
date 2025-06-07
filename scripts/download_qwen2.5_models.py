@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Download Qwen3 model family for experiments.
+Download Qwen2.5 model family for experiments.
 
-This script downloads all required Qwen3 models to the raid storage.
+This script downloads all required Qwen2.5 models to the raid storage.
 Models will be saved in HuggingFace format for easy loading.
 """
 
@@ -17,25 +17,25 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 
-# Qwen3 model configurations
-QWEN3_MODELS = {
+# Qwen2.5 model configurations
+QWEN2_5_MODELS = {
     "7b": {
-        "repo_id": "Qwen/Qwen2.5-7B",  # Using Qwen2.5 as Qwen3 proxy
+        "repo_id": "Qwen/Qwen2.5-7B-Instruct",
         "revision": "main",
         "size_gb": 15
     },
     "14b": {
-        "repo_id": "Qwen/Qwen2.5-14B",
+        "repo_id": "Qwen/Qwen2.5-14B-Instruct",
         "revision": "main", 
         "size_gb": 28
     },
     "32b": {
-        "repo_id": "Qwen/Qwen2.5-32B",
+        "repo_id": "Qwen/Qwen2.5-32B-Instruct",
         "revision": "main",
         "size_gb": 65
     },
     "72b": {
-        "repo_id": "Qwen/Qwen2.5-72B",
+        "repo_id": "Qwen/Qwen2.5-72B-Instruct"
         "revision": "main",
         "size_gb": 145
     }
@@ -55,12 +55,12 @@ def check_disk_space(required_gb: int, path: Path) -> bool:
 
 
 def download_model(model_size: str, base_path: Path, token: str = None) -> bool:
-    """Download a single Qwen model."""
-    config = QWEN3_MODELS[model_size]
-    model_path = base_path / f"qwen3-{model_size}"
+    """Download a single Qwen2.5 model."""
+    config = QWEN2_5_MODELS[model_size]
+    model_path = base_path / f"qwen2.5-{model_size}"
     
     if model_path.exists() and any(model_path.iterdir()):
-        logger.info(f"Model qwen3-{model_size} already exists at {model_path}")
+        logger.info(f"Model qwen2.5-{model_size} already exists at {model_path}")
         return True
     
     logger.info(f"Downloading {config['repo_id']} to {model_path}")
@@ -80,21 +80,21 @@ def download_model(model_size: str, base_path: Path, token: str = None) -> bool:
             max_workers=4
         )
         
-        logger.info(f"Successfully downloaded qwen3-{model_size}")
+        logger.info(f"Successfully downloaded qwen2.5-{model_size}")
         return True
         
     except Exception as e:
-        logger.error(f"Failed to download qwen3-{model_size}: {e}")
+        logger.error(f"Failed to download qwen2.5-{model_size}: {e}")
         return False
 
 
 def download_all_models(base_path: Path, token: str = None, models: List[str] = None) -> Dict[str, bool]:
-    """Download all required Qwen3 models."""
+    """Download all required Qwen2.5 models."""
     if models is None:
-        models = list(QWEN3_MODELS.keys())
+        models = list(QWEN2_5_MODELS.keys())
     
     # Check total required space
-    total_required_gb = sum(QWEN3_MODELS[m]["size_gb"] for m in models)
+    total_required_gb = sum(QWEN2_5_MODELS[m]["size_gb"] for m in models)
     
     if not check_disk_space(total_required_gb, base_path):
         logger.error(f"Insufficient disk space. Need {total_required_gb} GB")
@@ -104,14 +104,14 @@ def download_all_models(base_path: Path, token: str = None, models: List[str] = 
     results = {}
     for model_size in models:
         logger.info(f"\n{'='*60}")
-        logger.info(f"Downloading Qwen3-{model_size.upper()}")
+        logger.info(f"Downloading Qwen2.5-{model_size.upper()}")
         logger.info(f"{'='*60}")
         
         success = download_model(model_size, base_path, token)
         results[model_size] = success
         
         if not success:
-            logger.warning(f"Failed to download qwen3-{model_size}, continuing with others...")
+            logger.warning(f"Failed to download qwen2.5-{model_size}, continuing with others...")
     
     return results
 
@@ -120,8 +120,8 @@ def verify_downloads(base_path: Path) -> Dict[str, bool]:
     """Verify that all models are downloaded correctly."""
     results = {}
     
-    for model_size in QWEN3_MODELS:
-        model_path = base_path / f"qwen3-{model_size}"
+    for model_size in QWEN2_5_MODELS:
+        model_path = base_path / f"qwen2.5-{model_size}"
         
         # Check if key files exist
         required_files = [
@@ -139,18 +139,18 @@ def verify_downloads(base_path: Path) -> Dict[str, bool]:
         results[model_size] = is_valid
         
         status = "✓" if is_valid else "✗"
-        logger.info(f"qwen3-{model_size}: {status}")
+        logger.info(f"qwen2.5-{model_size}: {status}")
     
     return results
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Download Qwen3 models")
+    parser = argparse.ArgumentParser(description="Download Qwen2.5 models")
     parser.add_argument("--base-path", type=str, 
                        default=f"/raid/{os.environ.get('USER', 'sasaki')}/models",
                        help="Base path for model storage")
     parser.add_argument("--models", nargs="+", 
-                       choices=list(QWEN3_MODELS.keys()),
+                       choices=list(QWEN2_5_MODELS.keys()),
                        help="Specific models to download (default: all)")
     parser.add_argument("--token", type=str, 
                        help="HuggingFace token for gated models")
@@ -187,18 +187,18 @@ def main():
         logger.info("DOWNLOAD SUMMARY")
         logger.info("="*60)
         
-        for model_size in QWEN3_MODELS:
+        for model_size in QWEN2_5_MODELS:
             if model_size in results:
                 status = "✓ Downloaded" if verify_results.get(model_size, False) else "✗ Failed"
-                logger.info(f"qwen3-{model_size}: {status}")
+                logger.info(f"qwen2.5-{model_size}: {status}")
     
     # Save model paths configuration
     config_path = base_path / "model_paths.json"
     import json
     
     model_paths = {
-        f"qwen3_{size}": str(base_path / f"qwen3-{size}")
-        for size in QWEN3_MODELS
+        f"qwen2.5_{size}": str(base_path / f"qwen2.5-{size}")
+        for size in QWEN2_5_MODELS
     }
     
     with open(config_path, 'w') as f:

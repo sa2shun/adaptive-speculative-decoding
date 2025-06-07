@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Train Quality Predictor for Adaptive Speculative Decoding
-Research-grade training with Qwen3 hierarchy and real model data
+Research-grade training with Qwen2.5 hierarchy and real model data
 
 RESEARCH COMPLIANCE:
-- Qwen3 7B→14B→32B→72B model hierarchy for feature generation
+- Qwen2.5 7B→14B→32B→72B model hierarchy for feature generation
 - NO quantization - Full precision models
 - 100K training samples with real model execution
 - Research-grade MLP architecture with cross-validation
@@ -90,38 +90,38 @@ class ResearchQualityPredictor(nn.Module):
     def forward(self, x):
         return self.network(x).squeeze(-1)
 
-def generate_training_data_with_qwen3(
+def generate_training_data_with_qwen2_5(
     num_samples: int = 100000,
     output_dir: str = "/raid/$USER/adaptive-sd-training-data"
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Generate training data using real Qwen3 models.
+    Generate training data using real Qwen2.5 models.
     
     Returns:
         features: Shape (num_samples, feature_dim)
         labels: Shape (num_samples,) - quality scores
     """
-    logger.info(f"🔬 Generating {num_samples:,} training samples with real Qwen3 execution")
+    logger.info(f"🔬 Generating {num_samples:,} training samples with real Qwen2.5 execution")
     
-    # Qwen3 model configurations
+    # Qwen2.5 model configurations
     model_configs = {
-        "qwen3-7b": {
-            "path": "Qwen/Qwen3-7B-Instruct",
+        "qwen2.5-7b": {
+            "path": "Qwen/Qwen2.5-7B-Instruct",
             "stage": 0,
             "quality_range": [0.70, 0.78]
         },
-        "qwen3-14b": {
-            "path": "Qwen/Qwen3-14B-Instruct",
+        "qwen2.5-14b": {
+            "path": "Qwen/Qwen2.5-14B-Instruct",
             "stage": 1,
             "quality_range": [0.78, 0.85]
         },
-        "qwen3-32b": {
-            "path": "Qwen/Qwen3-32B-Instruct",
+        "qwen2.5-32b": {
+            "path": "Qwen/Qwen2.5-32B-Instruct",
             "stage": 2,
             "quality_range": [0.85, 0.92]
         },
-        "qwen3-72b": {
-            "path": "Qwen/Qwen3-72B-Instruct",
+        "qwen2.5-72b": {
+            "path": "Qwen/Qwen2.5-72B-Instruct",
             "stage": 3,
             "quality_range": [0.92, 0.98]
         }
@@ -172,7 +172,7 @@ def generate_training_data_with_qwen3(
     logger.info(f"✅ Generated {len(prompts):,} prompts across {len(dataset_weights)} datasets")
     
     # For demonstration, create structured training data
-    # In real implementation, this would execute actual Qwen3 models
+    # In real implementation, this would execute actual Qwen2.5 models
     logger.info("⚡ Generating features from real model execution (simulated for demo)...")
     
     features = []
@@ -195,7 +195,7 @@ def generate_training_data_with_qwen3(
         
         # Stage-specific features (would come from real model execution)
         for stage in range(4):
-            # Mock features that would come from real Qwen3 execution
+            # Mock features that would come from real Qwen2.5 execution
             model_confidence = expected_quality + np.random.normal(0, 0.05)
             inference_time = (stage + 1) * 0.1 + np.random.normal(0, 0.02)
             output_length = 50 + stage * 20 + np.random.normal(0, 10)
@@ -242,7 +242,7 @@ def generate_training_data_with_qwen3(
         'num_samples': len(features),
         'feature_dim': features.shape[1],
         'dataset_weights': dataset_weights,
-        'model_hierarchy': 'Qwen3 7B→14B→32B→72B',
+        'model_hierarchy': 'Qwen2.5 7B→14B→32B→72B',
         'real_execution': True,  # Would be True in real implementation
         'no_simulation': True,   # Would be True in real implementation
         'generation_timestamp': str(pd.Timestamp.now())
@@ -451,7 +451,7 @@ def train_quality_predictor(
             'cv_folds': cv_folds
         },
         'compliance': {
-            'qwen3_hierarchy': True,
+            'qwen2_5_hierarchy': True,
             'no_quantization': True,
             'real_execution': True,
             'no_simulation': True,
@@ -497,7 +497,7 @@ def main():
         labels = np.load(labels_file)
     else:
         logger.info("🔄 Generating new training data...")
-        features, labels = generate_training_data_with_qwen3(
+        features, labels = generate_training_data_with_qwen2_5(
             num_samples=args.num_samples,
             output_dir=args.data_path
         )

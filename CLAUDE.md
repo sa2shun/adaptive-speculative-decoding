@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Mandatory Quality Standards:
 - **NO COMPROMISES** on model size, dataset scale, or experimental rigor
-- Use FULL-PRECISION Qwen3 models (7B, 14B, 32B, 72B) without quantization
+- Use FULL-PRECISION Qwen2.5 models (7B, 14B, 32B, 72B) without quantization
 - Maintain LARGE-SCALE datasets (100K+ training samples, 1000+ evaluation samples per task)
 - Conduct COMPREHENSIVE experiments across all complexity levels and λ values
 - Document ALL experimental details, hyperparameters, and results with research-grade precision
@@ -17,15 +17,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the adaptive-speculative-decoding repository, implementing a multi-stage Draft-Verify pipeline with input-dependent depth optimization for Large Language Model (LLM) inference. The system uses **Qwen3 7B→14B→32B→72B model hierarchy** with dynamic stopping based on input difficulty and real latency-based cost modeling.
+This is the adaptive-speculative-decoding repository, implementing a multi-stage Draft-Verify pipeline with input-dependent depth optimization for Large Language Model (LLM) inference. The system uses **Qwen2.5 7B→14B→32B→72B model hierarchy** with dynamic stopping based on input difficulty and real latency-based cost modeling.
 
 ## Model Hierarchy Specification
 
-### Fixed 4-Stage Qwen3 Architecture:
-1. **Stage 0**: Qwen/Qwen3-7B-Instruct (7B parameters)
-2. **Stage 1**: Qwen/Qwen3-14B-Instruct (14B parameters) 
-3. **Stage 2**: Qwen/Qwen3-32B-Instruct (32B parameters)
-4. **Stage 3**: Qwen/Qwen3-72B-Instruct (72B parameters)
+### Fixed 4-Stage Qwen2.5 Architecture:
+1. **Stage 0**: Qwen/Qwen2.5-7B-Instruct (7B parameters)
+2. **Stage 1**: Qwen/Qwen2.5-14B-Instruct (14B parameters) 
+3. **Stage 2**: Qwen/Qwen2.5-32B-Instruct (32B parameters)
+4. **Stage 3**: Qwen/Qwen2.5-72B-Instruct (72B parameters)
 
 ### Technical Requirements:
 - **No quantization**: Full FP16/BF16 precision for research accuracy
@@ -44,8 +44,8 @@ pip install -r requirements.txt
 
 ### Model Download
 ```bash
-# Download all Qwen3 models to /raid/$USER/adaptive-sd-models/
-python scripts/download_qwen3_models.py --storage-path /raid/$USER/adaptive-sd-models/
+# Download all Qwen2.5 models to /raid/$USER/adaptive-sd-models/
+python scripts/download_qwen2.5_models.py --storage-path /raid/$USER/adaptive-sd-models/
 ```
 
 ### Training Data Generation
@@ -89,7 +89,7 @@ flake8 src/ tests/
 ## Architecture
 
 ### Core Components
-1. **Stage Model** (`src/models/stage.py`): Wrapper for each Qwen3 model in the hierarchy
+1. **Stage Model** (`src/models/stage.py`): Wrapper for each Qwen2.5 model in the hierarchy
 2. **Quality Predictor** (`src/models/predictor.py`): MLP predicting acceptance probability using real features
 3. **DP Solver** (`src/algorithms/dp_solver.py`): Dynamic programming for optimal stopping with latency-based costs
 4. **Pipeline** (`src/serving/pipeline.py`): Orchestrates multi-stage inference with real-time decision making
@@ -103,7 +103,7 @@ flake8 src/ tests/
 - **Bayesian risk adjustment** for prediction uncertainty
 
 ### Configuration Files
-- `configs/qwen3_models.yaml`: Qwen3 model specifications and GPU allocation
+- `configs/qwen2.5_models.yaml`: Qwen2.5 model specifications and GPU allocation
 - `configs/training.yaml`: Quality predictor training hyperparameters
 - `configs/evaluation.yaml`: Comprehensive evaluation settings
 - `configs/cost_profiling.yaml`: Latency measurement configuration
@@ -118,7 +118,7 @@ The λ (lambda) parameter controls quality-speed tradeoff:
 - λ > 5: Prioritize quality (fewer early stops)
 
 ### GPU Memory Allocation
-**Full-precision requirements (no quantization):**
+**Full-precision requirements (no quantization for Qwen2.5 models):**
 - 7B model: ~14GB GPU memory (1x A100)
 - 14B model: ~28GB GPU memory (1x A100 or 2x A100 with TP=2)
 - 32B model: ~64GB GPU memory (2x A100 with TP=2)
@@ -141,7 +141,7 @@ The λ (lambda) parameter controls quality-speed tradeoff:
 ## Research-Grade Experimental Protocol
 
 ### Required Experimental Scope:
-1. **Model Scale**: Full Qwen3 7B→14B→32B→72B hierarchy (NO compromises)
+1. **Model Scale**: Full Qwen2.5 7B→14B→32B→72B hierarchy (NO compromises)
 2. **Training Data**: Exactly 100,000 diverse, high-quality samples
 3. **Evaluation Data**: 2,000+ samples per dataset (MMLU, HumanEval, GSM8K, TruthfulQA)
 4. **Lambda Values**: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0] (6 values comprehensive sweep)
@@ -165,7 +165,7 @@ The λ (lambda) parameter controls quality-speed tradeoff:
 ### Storage and Data Management
 ```bash
 # Storage hierarchy on 30TB /raid disk
-/raid/$USER/adaptive-sd-models/          # Qwen3 models (~500GB total)
+/raid/$USER/adaptive-sd-models/          # Qwen2.5 models (~500GB total)
 /raid/$USER/adaptive-sd-training-data/   # 100K training samples (~50GB)
 /raid/$USER/adaptive-sd-eval-data/       # Evaluation datasets (~10GB)
 /raid/$USER/adaptive-sd-results/         # Experimental results (~100GB)
@@ -173,7 +173,7 @@ The λ (lambda) parameter controls quality-speed tradeoff:
 ```
 
 ### Computational Resources
-- **Model Storage**: ~500GB for all Qwen3 models
+- **Model Storage**: ~500GB for all Qwen2.5 models
 - **Training Data**: ~50GB for 100K diverse samples
 - **Evaluation**: 48-72 hours on 8x A100 cluster
 - **Memory**: 640GB GPU memory total (8x 80GB A100)

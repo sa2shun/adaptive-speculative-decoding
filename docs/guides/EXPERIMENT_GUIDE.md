@@ -18,7 +18,7 @@ H100が8枚ある環境で、以下のコマンドを実行するだけで全実
 ### 2. **モデルダウンロード** (2-3時間)
 ```bash
 # 個別実行する場合
-python3 scripts/download_qwen3_models.py --base-path /raid/$USER/models
+python3 scripts/download_qwen2.5_models.py --base-path /raid/$USER/models
 ```
 - Qwen2.5-7B (15GB)
 - Qwen2.5-14B (28GB)
@@ -86,10 +86,10 @@ python3 src/training/generate_training_data.py \
 ## ⚡ GPU使用状況
 
 実験中のGPU割り当て：
-- GPU 0: Qwen-7B
-- GPU 1: Qwen-14B
-- GPU 2-3: Qwen-32B
-- GPU 4-7: Qwen-72B
+- GPU 0: Qwen2.5-7B
+- GPU 1: Qwen2.5-14B
+- GPU 2-3: Qwen2.5-32B
+- GPU 4-7: Qwen2.5-72B
 
 ## 🛠️ トラブルシューティング
 
@@ -99,7 +99,7 @@ python3 src/training/generate_training_data.py \
 export HF_TOKEN="your_token_here"
 
 # 再度ダウンロード
-python3 scripts/download_qwen3_models.py --token $HF_TOKEN
+python3 scripts/download_qwen2.5_models.py --token $HF_TOKEN
 ```
 
 ### メモリ不足の場合

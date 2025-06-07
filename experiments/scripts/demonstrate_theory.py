@@ -16,7 +16,7 @@ def demonstrate_optimal_policy():
     """Show how optimal thresholds change with λ."""
     print("=== Optimal Stopping Policy ===\n")
     
-    # Qwen3 model parameters
+    # Qwen2.5 model parameters
     quality_bounds = [0.70, 0.80, 0.85, 0.90]  # 7B, 14B, 32B, 72B
     cost_ratios = [1.0, 2.0, 4.5, 10.0]
     
